@@ -53,7 +53,7 @@ int size(){
 
 int number_of_products(FILE* arq){
     fseek(arq, 0, SEEK_END);
-    int tam = trunc(ftell(arq) / tamanho_registro());
+    int tam = trunc(ftell(arq) / size());
     return tam;
 }
 
@@ -102,7 +102,7 @@ void printBase(FILE *out){
 printf("\nPrinting database...\n");
     rewind(out);
     TProd *p;
-    while ((p = le(out)) != NULL)
+    while ((p = read(out)) != NULL)
         printProd(p);
     free(p);
 }
