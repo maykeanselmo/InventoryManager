@@ -4,11 +4,12 @@
 #include <math.h>
 #include <time.h>
 #include <stdarg.h>
+#include <string.h>
 
 
 TProd *prod(int cod, int qtd, char *name, char *duedate, double value){
     TProd *prod = (TProd * ) malloc(sizeof(TProd));
-    if (prod) memset(prod, 0, sizeof(prod));
+    if (prod) memset(prod, 0, sizeof(TProd));
     prod->cod = cod;
     prod->qtd = qtd;
     strcpy(prod->name, name);
@@ -41,10 +42,10 @@ TProd *read(FILE *in){
 
 void printProd(TProd *prod){
     printf("\n---------------------------------------");
-    printf("\nPRODUCT\t\t-/%d/-\n\t\t",prod->cod);
+    printf("\nPRODUCT\t\t- %d -\n\t\t",prod->cod);
     printf("\nNAME:\t%s",prod->name);
-    printf("\nVALUE:\t%4.2f",prod->name);
-    printf("\nQUANTITY:\t%d",prod->qtd);
+    printf("\nVALUE:\t%4.2f",prod->value);
+    printf("\nQUANTITY:\t%ld",prod->qtd);
     printf("\n---------------------------------------\n");
 }
 
