@@ -42,10 +42,10 @@ TProd *read(FILE *in){
 
 void printProd(TProd *prod){
     printf("\n---------------------------------------");
-    printf("\nPRODUCT\t\t- %d -\n\t\t",prod->cod);
-    printf("\nNAME:\t%s",prod->name);
-    printf("\nVALUE:\t%4.2f",prod->value);
-    printf("\nQUANTITY:\t%ld",prod->qtd);
+    printf("\nPRODUCT\t\t\t- %d -",prod->cod);
+    printf("\nNAME:\t\t%s",prod->name);
+    printf("\nVALUE:\t\t%4.2f",prod->value);
+    printf("\nQUANTITY:\t\t- %ld -",prod->qtd);
     printf("\n---------------------------------------\n");
 }
 
@@ -62,56 +62,7 @@ int number_of_products(FILE* arq){
     return tam;
 }
 
-void c_ordenate_database(FILE *out, int tam){
-    int vet[tam];
-    TProd *p;
-    for(int i = 0 ; i<tam ; i++){
-        vet[i] = i+1;
-    }
-    printf("\nGenerating a ordenated database...\n");
-    for(int i = 0 ; i < tam; i++){
-        //rever como quantidade do produto é gerada! 
-        p = prod(vet[i],i*10,"PROD", "00/00/0000",10*i);
-        save(p,out);
-    }
-    free(p);
-}
 
-//date mixup
-void mix_up(int *vet,int MAX,int exchanges){
-    srand(time(NULL));
-    for (int i = 0; i <= exchanges; i++) {
-        int j = rand() % (MAX-1);
-        int k = rand() % (MAX-1);
-        int tmp = vet[j];
-        vet[j] = vet[k];
-        vet[k] = tmp;
-    }
-}
-
-void c_disorded_database(FILE *out, int tam, int exchanges){
-    int vet[tam];
-    TProd *p;
-    for(int i = 0 ; i<tam ; i++){
-        vet[i] = i+1;
-    }
-    mix_up(vet,tam,exchanges);
-    printf("\nGenerating a disorded database...\n");
-    for(int i = 0 ; i < tam; i++){
-        p = prod(vet[i], i*10,"PROD", "00/00/0000",10*i);
-        save(p,out);
-    }
-    free(p);
-}
-
-void printBase(FILE *out){
-printf("\nPrinting database...\n");
-    rewind(out);
-    TProd *p;
-    while ((p = read(out)) != NULL)
-        printProd(p);
-    free(p);
-}
 
 
 

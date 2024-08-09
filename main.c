@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Product.c"
+#include "Order.c"
+#include "FileUtils.c"
 
 int main(){
     TProd *prodTest = (TProd *)malloc(sizeof(TProd));
@@ -11,4 +13,7 @@ int main(){
     strcpy(prodTest->due_date,"27/02/0505");
     prodTest->value = 0.00;
     printProd(prodTest);
+    TOrder* order1 = (TOrder *)malloc(sizeof(TOrder));
+    order1 = order(10,"1");
+    printBase(order1->orderList);
 }
