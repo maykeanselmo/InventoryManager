@@ -6,13 +6,14 @@
 typedef struct Produto
 {
     int cod;
+    unsigned long int qtd;
     char name[30];
     char due_date[11];
     double value;
 } TProd;
 
 // Create a product
-TProd *prod(int cod, char *name, char *duedate, double value);
+TProd *prod(int cod, int qtd, char *name, char *duedate, double value);
 
 // save a product in a file at the current cursor position
 void save(TProd *prod, FILE *out);

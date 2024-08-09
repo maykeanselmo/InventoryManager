@@ -6,10 +6,11 @@
 #include <stdarg.h>
 
 
-TProd *prod(int cod, char *name, char *duedate, double value){
+TProd *prod(int cod, int qtd, char *name, char *duedate, double value){
     TProd *prod = (TProd * ) malloc(sizeof(TProd));
     if (prod) memset(prod, 0, sizeof(prod));
     prod->cod = cod;
+    prod->qtd = qtd;
     strcpy(prod->name, name);
     strcpy(prod->due_date, duedate);
     prod->value = value;
@@ -19,6 +20,7 @@ TProd *prod(int cod, char *name, char *duedate, double value){
 // writes a product to the file at the current cursor position
 void save(TProd *prod, FILE *out){
     fwrite(&prod->cod, sizeof(int), 1, out);
+    fwrite(&prod->qtd, sizeof(int), 1, out);
     fwrite(prod->name, sizeof(char), sizeof(prod->name), out);
     fwrite(prod->due_date, sizeof(char), sizeof(prod->due_date), out);
     fwrite(&prod->value, sizeof(double),1,out);
@@ -30,6 +32,7 @@ TProd *read(FILE *in){
         free(prod);
         return NULL;
     }
+    fread(&prod->qtd, sizeof(int), 1, in);
     fread(prod->name, sizeof(char), sizeof(prod->name), in);
     fread(prod->due_date, sizeof(char), sizeof(prod->due_date), in);
     fread(&prod->value, sizeof(double), 1, in);
@@ -41,11 +44,12 @@ void printProd(TProd *prod){
     printf("\nPRODUCT\t\t-/%d/-\n\t\t",prod->cod);
     printf("\nNAME:\t%s",prod->name);
     printf("\nVALUE:\t%4.2f",prod->name);
+    printf("\nQUANTITY:\t%d",prod->qtd);
     printf("\n---------------------------------------\n");
 }
 
 int size(){
-    return sizeof(int)  //cod
+    return sizeof(int) * 2  //cod
         + sizeof(char) * 30 //name
         + sizeof(char) * 11 //due_date
         + sizeof(double); //value
@@ -65,7 +69,8 @@ void c_ordenate_database(FILE *out, int tam){
     }
     printf("\nGenerating a ordenated database...\n");
     for(int i = 0 ; i < tam; i++){
-        p = prod(vet[i],"PROD", "00/00/0000",10*i);
+        //rever como quantidade do produto é gerada! 
+        p = prod(vet[i],i*10,"PROD", "00/00/0000",10*i);
         save(p,out);
     }
     free(p);
@@ -92,7 +97,7 @@ void c_disorded_database(FILE *out, int tam, int exchanges){
     mix_up(vet,tam,exchanges);
     printf("\nGenerating a disorded database...\n");
     for(int i = 0 ; i < tam; i++){
-        p = prod(vet[i],"PROD", "00/00/0000",10*i);
+        p = prod(vet[i], i*10,"PROD", "00/00/0000",10*i);
         save(p,out);
     }
     free(p);
