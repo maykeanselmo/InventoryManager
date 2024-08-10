@@ -15,7 +15,7 @@ TOrder* order(TUser* user, int numOfTypes, char *date){
     strcat(namefile, "order.txt");
 
     TOrder* order = (TOrder*) malloc(sizeof(TOrder));
-    if ((user->orderFile = fopen("%sorder.txt", "w+")) == NULL) {
+    if ((user->orderFile = fopen(namefile, "w+")) == NULL) {
         printf("Erro ao abrir arquivo\n");
         exit(1);
     }
@@ -40,10 +40,11 @@ TOrder* order(TUser* user, int numOfTypes, char *date){
     printf("\nGenerating a order...\n");
     for(int i = 0 ; i < numOfTypes; i++){
         p = prod(vet[i], i*10,"PROD", "00/00/0000",10*i);
-        order->value+= p->value;
+        order->value= p->value*p->qtd;
         save(p,user->orderFile);
     }
     free(p);
+
     printf("\npedido gerado com sucesso");
 
     return order;

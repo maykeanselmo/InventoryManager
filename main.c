@@ -3,8 +3,9 @@
 #include <string.h>
 #include "Product.c"
 #include "Order.c"
+#include "User.c"
 #include "FileUtils.c"
-#include "Interface.c"
+// #include "Interface.c"
 
 int main(){
     // TProd *prodTest = (TProd *)malloc(sizeof(TProd));
@@ -14,8 +15,20 @@ int main(){
     // strcpy(prodTest->due_date,"27/02/0505");
     // prodTest->value = 0.00;
     // printProd(prodTest);
-    TOrder* order1 = (TOrder *)malloc(sizeof(TOrder));
-    TUser* user1 = (TUser*)malloc(sizeof(TUser));
+    // TOrder* order1 = (TOrder *)malloc(sizeof(TOrder));
+    printf("hello");    // orderPrint(order1);    // menu();
+    TUser* user1 = user("ab","ab","ba","ba");
+    printf("hello2");    // orderPrint(order1);    // menu();
+    TUser* user2 = user("cd","cd","dc","dc");
 
-    orderPrint(order1);    // menu();
+    TOrder *pedido = order(user1,10,"1/1/1");
+    TOrder *pedido2 = order(user2,4,"2/2/2");
+    printBase(user1->orderFile);
+    printf("\n\nESPAÇO\n\n");
+    printBase(user2->orderFile);
+
+
+    
+    
+
 }

@@ -6,8 +6,9 @@
 #include "Product.h"
 #include "User.h"
 
-typedef struct Order
+typedef struct Orderlist
 {
+    TUser *user;
     int cod;
     int numOfTypes;
     char date[11];
@@ -21,4 +22,4 @@ void orderPrint(TOrder *order);
 
 
 
-#endif
+#endif 

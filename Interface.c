@@ -81,8 +81,6 @@ void menu(){
     }
 
     
-
-    return 0;
 }
 
 void genDisordedBase(){
