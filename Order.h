@@ -8,7 +8,7 @@
 
 typedef struct Orderlist
 {
-    TUser *user;
+    // TUser *user;
     int cod;
     int numOfTypes;
     char date[11];
