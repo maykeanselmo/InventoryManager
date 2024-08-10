@@ -6,15 +6,21 @@
 #include <time.h>
 #include <stdarg.h>
 
-TOrder* order(int numOfTypes, char *date){
-    FILE * orderFile;
+TOrder* order(TUser* user, int numOfTypes, char *date){
+    // FILE * orderFile = user->orderFile;
+
+
+    char namefile[sizeof(user->name) + 9];
+    strcpy(namefile, user->name);
+    strcat(namefile, "order.txt");
+
     TOrder* order = (TOrder*) malloc(sizeof(TOrder));
-    if ((orderFile = fopen("order.txt", "w+")) == NULL) {
+    if ((user->orderFile = fopen("%sorder.txt", "w+")) == NULL) {
         printf("Erro ao abrir arquivo\n");
         exit(1);
     }
 
-    order->orderList = orderFile;
+    // order->orderList = orderFile;
     order->value = 0.0;
     order->cod = rand();
     strcpy(order->date, date);
@@ -35,7 +41,7 @@ TOrder* order(int numOfTypes, char *date){
     for(int i = 0 ; i < numOfTypes; i++){
         p = prod(vet[i], i*10,"PROD", "00/00/0000",10*i);
         order->value+= p->value;
-        save(p,orderFile);
+        save(p,user->orderFile);
     }
     free(p);
     printf("\npedido gerado com sucesso");

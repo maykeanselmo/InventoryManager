@@ -6,7 +6,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-TUser* user(char *name, char *adress, char *paymentMethod, char *cpf){
+TUser* user(char name, char adress, char paymentMethod, char cpf){
     TUser *user = (TUser*) malloc(sizeof(TUser));
     strcpy(user->name, name);
     strcpy(user->adress, adress);

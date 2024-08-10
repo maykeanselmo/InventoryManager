@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Product.h"
+#include "User.h"
 
 typedef struct Order
 {
-    FILE* orderList; 
     int cod;
     int numOfTypes;
     char date[11];
@@ -15,7 +15,7 @@ typedef struct Order
 } TOrder;
 
 //função vai criar um arquivo txt com o tamanho numOfTypes * tamProduto e vai retornar um código que é gerado de maneira aleatória
-TOrder* order(int numOfTypes, char *date );
+TOrder* order(TUser* user, int numOfTypes, char *date );
 void orderPrint(TOrder *order);
 
 

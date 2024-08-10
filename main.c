@@ -14,8 +14,8 @@ int main(){
     // strcpy(prodTest->due_date,"27/02/0505");
     // prodTest->value = 0.00;
     // printProd(prodTest);
-    // TOrder* order1 = (TOrder *)malloc(sizeof(TOrder));
-    // order1 = order(10,"27/05/2004");
-    // orderPrint(order1);
-    menu();
+    TOrder* order1 = (TOrder *)malloc(sizeof(TOrder));
+    TUser* user1 = (TUser*)malloc(sizeof(TUser));
+
+    orderPrint(order1);    // menu();
 }
