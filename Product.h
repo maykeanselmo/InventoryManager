@@ -26,7 +26,7 @@ TProd *read(FILE *in);
 // print a product
 void printProd(TProd *prod);
 
-int size();
+int sizeProd();
 int number_of_products(FILE* arq);
 
 

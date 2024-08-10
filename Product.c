@@ -49,7 +49,7 @@ void printProd(TProd *prod){
     printf("\n---------------------------------------\n");
 }
 
-int size(){
+int sizeProd(){
     return sizeof(int) * 2  //cod
         + sizeof(char) * 30 //name
         + sizeof(char) * 11 //due_date
@@ -58,7 +58,7 @@ int size(){
 
 int number_of_products(FILE* arq){
     fseek(arq, 0, SEEK_END);
-    int tam = trunc(ftell(arq) / size());
+    int tam = trunc(ftell(arq) / sizeProd());
     return tam;
 }
 
