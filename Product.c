@@ -27,7 +27,7 @@ void save(TProd *prod, FILE *out){
     fwrite(&prod->value, sizeof(double),1,out);
 }
 
-TProd *read(FILE *in){
+TProd *readProd(FILE *in){
     TProd *prod = (TProd * ) malloc(sizeof(TProd));
     if (0 >= fread(&prod->cod, sizeof(int), 1, in)) {
         free(prod);
@@ -66,10 +66,12 @@ TProd *findProdSequential(int cod, FILE *arq){
     clock_t ti,tf;
 
     TProd *p = NULL;
+
+
     int i = 0;
     rewind(arq);
     ti = clock();
-    while ((p = read(arq)) != NULL){ 
+    while ((p = readProd(arq)) != NULL){ 
         i++;    
         if (p->cod == cod){
             tf = clock();

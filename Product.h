@@ -21,7 +21,7 @@ TProd *prod(int cod, int qtd, char *name, char *duedate, double value);
 void save(TProd *prod, FILE *out);
 
 // read a Product at the file "In"
-TProd *read(FILE *in);
+TProd *readProd(FILE *in);
 
 // print a product
 void printProd(TProd *prod);

@@ -52,7 +52,7 @@ void printBase(FILE *out){
 printf("\nPrinting database...\n");
     rewind(out);
     TProd *p;
-    while ((p = read(out)) != NULL)
+    while ((p = readProd(out)) != NULL)
         printProd(p);
     free(p);
 }
