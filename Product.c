@@ -62,6 +62,29 @@ int number_of_products(FILE* arq){
     return tam;
 }
 
+TProd *findProdSequential(int cod, FILE *arq){
+    clock_t ti,tf;
+
+    TProd *p = NULL;
+    int i = 0;
+    rewind(arq);
+    ti = clock();
+    while ((p = read(arq)) != NULL){ 
+        i++;    
+        if (p->cod == cod){
+            tf = clock();
+            printf("\nTEMPO: %f\n",(double)(tf - ti) / CLOCKS_PER_SEC);
+            printf("\nCOMPARACOES BUSCA SEQUENCIAL: %d\n",i);
+
+            return p;
+        }
+        free(p); 
+    }
+    return p;
+    
+
+}
+
 
 
 

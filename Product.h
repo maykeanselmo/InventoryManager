@@ -39,5 +39,7 @@ void c_disorded_database(FILE *out, int tam, int exchanges);
 
 void printBase(FILE *out);
 
+TProd *findProdSequential(int cod, FILE *arq);
+
 
 #endif
