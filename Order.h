@@ -16,6 +16,7 @@ typedef struct Order
 
 //função vai criar um arquivo txt com o tamanho numOfTypes * tamProduto e vai retornar um código que é gerado de maneira aleatória
 TOrder* order(int numOfTypes, char *date );
+void orderPrint(TOrder *order);
 
 
 

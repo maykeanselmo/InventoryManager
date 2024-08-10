@@ -14,6 +14,6 @@ int main(){
     prodTest->value = 0.00;
     printProd(prodTest);
     TOrder* order1 = (TOrder *)malloc(sizeof(TOrder));
-    order1 = order(10,"1");
-    printBase(order1->orderList);
+    order1 = order(10,"27/05/2004");
+    orderPrint(order1);
 }

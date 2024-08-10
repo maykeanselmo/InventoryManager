@@ -9,11 +9,6 @@
 TOrder* order(int numOfTypes, char *date){
     FILE * orderFile;
     TOrder* order = (TOrder*) malloc(sizeof(TOrder));
-    //vou usar a função c_disorded_database do arquivo Product.c para criar, não sei se é melhor separar ela ou não
-    // if (order == NULL) {
-    //     printf("Erro ao abrir arquivo\n");
-    //     exit(1);
-    // }
     if ((orderFile = fopen("order.txt", "w+")) == NULL) {
         printf("Erro ao abrir arquivo\n");
         exit(1);
@@ -30,5 +25,13 @@ TOrder* order(int numOfTypes, char *date){
     printf("\npedido gerado com sucesso");
 
     return order;
+}
+
+void orderPrint(TOrder *order){
+    printf("\n*****************************************");
+    printf("\nORDER %d\t\t%s",order->cod,order->date);
+    printf("\nTYPES:%d\t TOTAL: %4.2f",order->numOfTypes,order->value);
+    printf("\n*****************************************");
+
 }
 
