@@ -11,6 +11,7 @@
 
 
 static FILE* stock;
+static TProd *p;
 
 
 void printMenu(){
@@ -43,7 +44,8 @@ void menu(){
                 system("pause");
                 break;
             case 2:
-
+                searchProd();
+                system("pause");
                 break;
 
 
@@ -79,8 +81,6 @@ void menu(){
     }
 
     
-
-    return 0;
 }
 
 void genDisordedBase(){
@@ -100,9 +100,21 @@ void genDisordedBase(){
 }
 
 void searchProd(){
-    int cod;
+    p= (TProd*)malloc(sizeof(TProd*));
+    int cod,op;
     printf("\nplease enter the code of the product: ");
             scanf("%d",&cod);
+    p = findProdSequential(cod,stock);
+    if(p!=NULL){
+        printf("\nproduct found.Do you want to print?");
+        printf("\n[0] - n\n[1] - y\n: ");
+            scanf("%d",&op);
+            if(op!=0){
+                printProd(p);
+                return;
+            }
+    }else printf("\nproduct not found.");
+
     
 
 }
