@@ -41,5 +41,13 @@ void printBase(FILE *out);
 
 TProd *findProdSequential(int cod, FILE *arq);
 
+void editProduct(int cod, FILE *stock);
+void processEditChoice(int choice, TProd *p);
+void posSearchProcess(TProd* p);
+void preRemoveProcess(TProd* p, FILE *stock);
+TProd *searchAndPrintProd(TProd* p, FILE* stock);
+
+
+
 
 #endif

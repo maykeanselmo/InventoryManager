@@ -3,6 +3,7 @@
 #include "Order.h"
 #include "User.h"
 #include "FileUtils.h"
+#include "intercalacaoBasico.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -20,17 +21,18 @@ int cod;
 void printMenu(){
     printf("\n---------------------------------------");
     printf("\n\tWELCOME TO THE INVENTORY SYSTEM\n");
-    printf("\n[1] - Generate disordered base.");
-    printf("\n[2] - Search for a product.");
-    printf("\n[3] - Remove product.");
-    printf("\n[4] - Add product.");
-    printf("\n[5] - Create a User.");
+    printf("\n[1] - Generate disordered base.");//C
+    printf("\n[2] - Search for a product.");//C
+    printf("\n[3] - Remove product.");//C
+    printf("\n[4] - Add product.");//c
+    printf("\n[5] - Create a User.");//c
     printf("\n[6] - Generate a order.");
     printf("\n[7] - Finish the order.");
-    printf("\n[8] - list all base.");
-    printf("\n[9] - edit a product.");
+    printf("\n[8] - list all base.");//c
+    printf("\n[9] - edit a product.");//c
     printf("\n[10] - edit a order.");
-    printf("\n[11] - remove a order.");
+    printf("\n[11] - remove a order.");//c
+    printf("\n[12] - remove an user.");//c
     printf("\n[0] - Exit.");
     printf("\n---------------------------------------");
     printf("\nplease enter a value: ");
@@ -56,10 +58,51 @@ void menu(){
 
 
             case 3:
+                p = searchAndPrintProd(p,stock);
+                int qtd = 0;
+                if(p!= NULL){
+                    printf("\nPlease enter the quantity of products you wish to remove: ");
+                    scanf("%d",&qtd);
+                    if(qtd>p->qtd){
+                        printf("\nInvalid input");
+                    }
+
+                    else if(qtd<=p->qtd){
+                        printf("\nAre you sure you want to remove %d itens of the product %d\n[1]- yes\n[0]- not\n",qtd,p->cod);
+                        fflush(stdin);
+                        scanf(" %d",&op);
+                        if (op !=0){
+                            // Marca o produto como removido, aqui usaremos uma quantidade igual a 0 como exemplo
+                            p->qtd = p->qtd-qtd;
+
+                            // Posiciona o cursor no local do produto encontrado
+                            fseek(stock, -sizeProd(), SEEK_CUR);
+
+                            // Atualiza o produto no arquivo com a quantidade zero
+                            save(p, stock);
+
+                            printf("\nProduct removed successfully.");
+                            op = 0;
+
+                        }
+                    }
+                }
                 break;
 
 
             case 4:
+                p = searchAndPrintProd(p,stock);
+                    qtd = 0;
+                    if(p!= NULL){
+                    printf("\nPlease enter the quantity of products you wish to add: ");
+                    scanf("%d",&qtd);
+                            p->qtd = p->qtd + qtd;
+                            // Posiciona o cursor no local do produto encontrado
+                            fseek(stock, -sizeProd(), SEEK_CUR);
+                            // Atualiza o produto no arquivo com a quantidade zero
+                            save(p, stock);
+                            printf("\nProduct added successfully.");    
+                
                 break;
 
 
@@ -82,66 +125,11 @@ void menu(){
 
             
             case 9:
-                printf("\nplease enter a code: ");
-                scanf("%d",&cod);
-                int posi;
-                p = findProdSequential(cod,stock);
-                //posição atual do cursor quando ele encontra o produto
-                posi = ftell(stock) - sizeProd();
-                printf("\n---------------------------------------");
-                if(p!= NULL){
-                    op = -1;
-                    while(op!=0){
-                        printf("\nPlease select the field you wish to change: ");
-                        printf("\n[1] - name  ");
-                        printf("\n[2] - duedate  ");
-                        printf("\n[3] - value\n: ");
-                        printf("\n[0] - exit\n: ");
-                        fflush(stdin);
-                        scanf("%d",&op);
-                        switch (op)
-                        {
-                        case 1:
-                            printf("\nplease enter a new name:\n");
-                            fflush(stdin); 
-                            fgets(p->name,sizeof(p->name),stdin);
-                            op = 0;
-                            break;
-                        
-                        case 2:
-                            printf("\nplease enter a new duedate:\n");
-                            fflush(stdin);
-                            fgets(p->due_date,sizeof(p->due_date),stdin);
-                            system("pause");
-                            op = 0;
-                            break;
-
-                        case 3:
-                            printf("\nplease enter a new value:\n");
-                            fflush(stdin);
-                            scanf("%lf",&p->value);
-                            op = 0;
-                            break;
-                        
-                        
-                        case 0:
-                            printf("\nleaving...");
-                            op = 0;
-                            break;
-                        
-                        default:
-                            printf("\ninvalid option!");
-                            break;
-                        }
-                    }
-
-                    //posiciona o cursor para a posição do produto p
-                    fseek(stock, posi, SEEK_SET);
-                    save(p,stock);
-                }else {
-                    printf("\nop not found...");
-                    break;
-                }
+               printf("\nplease enter a code of product: ");
+                scanf("%d", &cod);
+                editProduct(cod, stock);
+                system("pause");
+                break;
             
             case 10:
                 
@@ -155,7 +143,7 @@ void menu(){
         
     }
 
-    
+    }
 }
 
 void genDisordedBase(){
@@ -179,19 +167,10 @@ void searchProd(){
     int cod,op;
     printf("\nplease enter the code of the product: ");
             scanf("%d",&cod);
+    
+
     p = findProdSequential(cod,stock);
-    if(p!=NULL){
-        printf("\nproduct found.Do you want to print?");
-        printf("\n[0] - not.\n[1] - yes.\n: ");
-            scanf("%d",&op);
-            if(op!=0){
-                printProd(p);
-                return;
-            }else op =0;
-    }else {
-        printf("\nproduct not found.");
-        return;
-        }
+    posSearchProcess(p);
     
 
 }
@@ -209,6 +188,22 @@ void finishOrder(){
 }
 void listBase(){
     printBase(stock);
+}
+
+void displayEditMenu(TProd *p) {
+    int op = -1;
+    while (op != 0) {
+        printf("\nSelecione o campo que deseja alterar: ");
+        printf("\n[1] - name");
+        printf("\n[2] - duedate");
+        printf("\n[3] - value");
+        printf("\n[4] - qtd");
+        printf("\n[0] - leave");
+        printf("\nOpção: ");
+        fflush(stdin);
+        scanf("%d", &op);
+        processEditChoice(op, p); // Função que processa a escolha
+    }
 }
 
 
