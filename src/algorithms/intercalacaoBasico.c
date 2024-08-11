@@ -1,12 +1,5 @@
-#include "Product.h"
+#include "../structs.h"
 #include "intercalacaoBasico.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <limits.h>
-#include <time.h>
-#include <math.h>
 
 void intercalacao_basica(FILE *out, int num_p) {
     typedef struct vetor {

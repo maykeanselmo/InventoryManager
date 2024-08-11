@@ -1,16 +1,8 @@
-#include "Product.h"
+#include "structs.h"
 #include "Interface.h"
-#include "Order.h"
-#include "User.h"
-#include "UserUtils.h"
-#include "FileUtils.h"
-#include "intercalacaoBasico.h"
-#include "classificacaoInterna.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <stdarg.h>
+#include "file/FileUtils.h"
+#include "algorithms/intercalacaoBasico.h"
+#include "algorithms/classificacaoInterna.h"
 
 #define USERSFILE "users.dat"
 

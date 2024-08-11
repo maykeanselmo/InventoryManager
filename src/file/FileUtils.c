@@ -1,12 +1,6 @@
-#include "Product.h"
-#include "FileUtils.h"
-#include "classificacaoInterna.h"
-#include "intercalacaoBasico.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <stdarg.h>
+#include "../structs.h"
+#include "../algorithms/classificacaoInterna.h"
+#include "../algorithms/intercalacaoBasico.h"
 
 void inteleavingAndIC(FILE* stock){
     rewind(stock);
