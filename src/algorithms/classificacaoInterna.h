@@ -1,5 +1,6 @@
 #ifndef CLASSIFICACAOINTERNA_H_INCLUDED
 #define CLASSIFICACAOINTERNA_H_INCLUDED
+
 #include <stdlib.h>
 #include <stdio.h>
 

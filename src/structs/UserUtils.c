@@ -1,9 +1,4 @@
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include "UserUtils.h"
+#include "../structs.h"
 
 // Função para gerar um CPF aleatório
 void generateRandomCPF(char* cpf) {

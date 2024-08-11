@@ -1,16 +1,9 @@
-#include "UserUtils.h"
-#include "User.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <stdarg.h>
-#include <string.h>
+#include "../structs.h"
 
 TUser *user(char *name, char *adress, char *paymentMethod, char *cpf) {
     TUser *user = (TUser *) malloc(sizeof(TUser));
     strcpy(user->name, name);
-    strcpy(user->adress, adress);
+    strcpy(user->address, adress);
     strcpy(user->paymentMethod, paymentMethod);
     strcpy(user->cpf, cpf);
 
@@ -31,7 +24,7 @@ void saveUsers(const char *filename, TUser *users, int count) {
 void generateRandomUsers(TUser *users, int count) {
     for (int i = 0; i < count; i++) {
         generateRandomName(users[i].name);
-        generateRandomAddress(users[i].adress);
+        generateRandomAddress(users[i].address);
         generateRandomPaymentMethod(users[i].paymentMethod);
         generateRandomCPF(users[i].cpf);
     }
@@ -166,7 +159,7 @@ void updateUser(const char *filename, const char *targetCPF, TUser *updatedUser)
 void printUser(TUser *user) {
     printf("\n*****************************************");
     printf("\nUSER\t%s\tCPF\t%s", user->name, user->cpf);
-    printf("\nADRESS:%s\t PAYMENTMETHOD: %s", user->adress, user->paymentMethod);
+    printf("\nADRESS:%s\t PAYMENTMETHOD: %s", user->address, user->paymentMethod);
     printf("\n*****************************************");
 }
 

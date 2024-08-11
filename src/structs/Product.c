@@ -1,11 +1,4 @@
-#include "Product.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
-#include <stdarg.h>
-#include <string.h>
-
+#include "../structs.h"
 
 TProd *prod(int cod, int qtd, char *name, char *duedate, double value){
     TProd *prod = (TProd * ) malloc(sizeof(TProd));
