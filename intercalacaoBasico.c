@@ -8,7 +8,7 @@
 #include <time.h>
 #include <math.h>
 
-void intercalacao_basica(FILE *out, int num_p) {
+void intercalacao_basica(FILE *out, int num_p, void* strucure) {
     typedef struct vetor {
         TProd *prod;
         FILE *f;

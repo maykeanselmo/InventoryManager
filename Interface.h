@@ -13,6 +13,7 @@ void createUser();
 void createOrder();
 void listBase();
 void finishOrder();
+void searchUser();
 
 
 #endif

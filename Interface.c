@@ -16,6 +16,7 @@
 
 static FILE* stock;
 static TProd *p;
+static TUser *u;
 int op,qtd = 0;
 int cod;
 
@@ -37,6 +38,9 @@ void printMenu(){
     printf("\n[11] - remove a order.");//c
     printf("\n[12] - remove an user.");//c
     printf("\n[13] - Interleaving and internal classification.");//c
+    printf("\n[14] - List all Users.");//c
+    printf("\n[15] - Remove a User.");//c
+    printf("\n[16] - Search for a user.");//C
     printf("\n[0] - Exit.");
     printf("\n---------------------------------------");
     printf("\nplease enter a value: ");
@@ -112,6 +116,7 @@ void menu(){
                 break;
 
             case 6:
+
                 
                 break;
 
@@ -146,7 +151,23 @@ void menu(){
                 break;
             
             case 13:
-                inteleavingAndIC(stock);
+                inteleavingAndIC(stock, p);
+                system("pause");
+                break;
+            
+            case 14:
+                printAllUsers(USERSFILE);
+                system("pause");
+                break;
+            
+            case 15:
+
+                u = user(" "," "," "," ");
+                    printf("\nplease enter the user cpf : ");
+                    fflush(stdin);
+                    fgets(u->cpf, sizeof(u->cpf), stdin);
+
+                deleteUser(USERSFILE,u->cpf);
                 system("pause");
                 break;
 
@@ -207,6 +228,11 @@ void finishOrder(){
 }
 void listBase(){
     printBase(stock);
+}
+
+void searchUser(){
+     
+
 }
 
 

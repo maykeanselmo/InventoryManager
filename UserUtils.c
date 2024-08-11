@@ -29,3 +29,20 @@ void generateRandomPaymentMethod(char* paymentMethod) {
     const char* methods[] = {"Credit Card", "Debit Card", "PayPal", "Cash"};
     strcpy(paymentMethod, methods[rand() % 4]); // Escolhe um método aleatório da lista
 }
+
+void posSearchProcessUser(TUser* u){
+     int op;
+    if(u!=NULL){
+        printf("\nuser found.Do you want to print?");
+        printf("\n[0] - not.\n[1] - yes.\n: ");
+            scanf("%d",&op);
+            if(op!=0){
+                printUser(u);
+                return;
+            }else op =0;
+    }else {
+        printf("\nproduct not found.");
+        return;
+        }
+
+}

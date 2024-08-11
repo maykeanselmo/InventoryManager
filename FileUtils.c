@@ -8,11 +8,11 @@
 #include <time.h>
 #include <stdarg.h>
 
-void inteleavingAndIC(FILE* stock){
+void inteleavingAndIC(FILE* stock, void * strucure){
     rewind(stock);
-    int num_particoes = classificacao_interna(stock, number_of_products(stock) * 0.1);
+    int num_particoes = classificacao_interna(stock, number_of_products(stock));
     rewind(stock);
-    intercalacao_basica(stock, num_particoes);
+    intercalacao_basica(stock, num_particoes, strucure);
     rewind(stock); 
 }
 void c_ordenate_database(FILE *out, int tam){

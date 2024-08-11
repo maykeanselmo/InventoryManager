@@ -16,5 +16,8 @@ int sizeUser();
 int qtdUserInFile(FILE* file);
 void printUser(TUser *user);
 void generateUserBase(const char *filename, int numberOfUsers);
+void printAllUsers(const char *filename);
+void deleteUser(const char *filename, const char *cpfToDelete);
+TUser *userSequentialSearch(const char *filename, const char *targetCPF);
 
 #endif

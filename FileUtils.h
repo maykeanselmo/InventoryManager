@@ -13,6 +13,6 @@ void c_disorded_database(FILE *out, int tam, int exchanges);
 void printBase(FILE *out);
 TProd *buscaBinariaPorCod(FILE *arq, int cod,int inicio, int fim);
 
-void inteleavingAndIC(FILE* stock);
+void inteleavingAndIC(FILE* stock, void * strucure);
 
 #endif 

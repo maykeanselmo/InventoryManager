@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void intercalacao_basica(FILE *out, int num_p);
+void intercalacao_basica(FILE *out, int num_p, void * strucure);
 
 
 
