@@ -2,8 +2,9 @@
 #include "Interface.h"
 #include "Order.h"
 #include "User.h"
-#include "FileUtils.h"
-// #include "intercalacaoBasico.h"
+#include "FileUtils.c"
+#include "intercalacaoBasico.c"
+#include "classificacaoInterna.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -12,6 +13,7 @@
 
 
 static FILE* stock;
+static FILE* out;
 static TProd *p;
 int op = 0;
 int cod;
@@ -107,6 +109,12 @@ void menu(){
 
 
             case 5:
+                
+                rewind(stock);
+                classificacao_interna(stock,1000);
+                rewind(stock);
+                intercalacao_basica(stock,10);
+                rewind(stock);
                 break;
 
 
@@ -190,21 +198,6 @@ void listBase(){
     printBase(stock);
 }
 
-void displayEditMenu(TProd *p) {
-    int op = -1;
-    while (op != 0) {
-        printf("\nSelecione o campo que deseja alterar: ");
-        printf("\n[1] - name");
-        printf("\n[2] - duedate");
-        printf("\n[3] - value");
-        printf("\n[4] - qtd");
-        printf("\n[0] - leave");
-        printf("\nOpção: ");
-        fflush(stdin);
-        scanf("%d", &op);
-        processEditChoice(op, p); // Função que processa a escolha
-    }
-}
 
 
 

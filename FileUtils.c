@@ -1,4 +1,4 @@
-#include "Product.h"
+#include "Product.c"
 #include "FileUtils.h"
 #include <stdio.h>
 #include <stdlib.h>

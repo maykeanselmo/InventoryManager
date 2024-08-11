@@ -100,6 +100,23 @@ void editProduct(int cod, FILE *stock) {
     }
 }
 
+void displayEditMenu(TProd *p) {
+    int op = -1;
+    while (op != 0) {
+        printf("\nSelecione o campo que deseja alterar: ");
+        printf("\n[1] - name");
+        printf("\n[2] - duedate");
+        printf("\n[3] - value");
+        printf("\n[4] - qtd");
+        printf("\n[0] - leave");
+        printf("\nOpção: ");
+        fflush(stdin);
+        scanf("%d", &op);
+        processEditChoice(op, p); // Função que processa a escolha
+    }
+}
+
+
 void processEditChoice(int choice, TProd *p) {
     switch (choice) {
         case 1:
