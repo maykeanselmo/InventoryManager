@@ -3,8 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include <time.h>
 #include <stdarg.h>
+#include <unistd.h>
+
+TOrder *readOrder(FILE *in);
 
 TOrder* order(TUser* user, int numOfTypes, char *date){
     // FILE * orderFile = user->orderFile;
@@ -57,7 +61,7 @@ TOrder *findOrderSequential(int cod, FILE *arq){
     int i = 0;
     rewind(arq);
     ti = clock();
-    while ((p = read(arq)) != NULL){
+    while ((p = (TOrder*)readOrder(arq)) != NULL){
         i++;
         if (p->cod == cod){
             tf = clock();

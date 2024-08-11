@@ -19,6 +19,14 @@ void generateUserBase(const char *filename, int numberOfUsers);
 TUser *userSequentialSearch(const char *filename, const char *targetCPF);
 void updateUser(const char *filename, const char *targetCPF, TUser *updatedUser);
 void printUser(TUser *user);
+
 int sizeUser();
 int qtdUserInFile(FILE *file);
+
+void generateUserBase(const char *filename, int numberOfUsers);
+void printAllUsers(const char *filename);
+void deleteUser(const char *filename, const char *cpfToDelete);
+TUser *userSequentialSearch(const char *filename, const char *targetCPF);
+
+
 #endif

@@ -21,7 +21,7 @@ TProd *prod(int cod, int qtd, char *name, char *duedate, double value);
 void save(TProd *prod, FILE *out);
 
 // read a Product at the file "In"
-TProd *read(FILE *in);
+TProd *readProd(FILE *in);
 
 // print a product
 void printProd(TProd *prod);
@@ -40,6 +40,15 @@ void c_disorded_database(FILE *out, int tam, int exchanges);
 void printBase(FILE *out);
 
 TProd *findProdSequential(int cod, FILE *arq);
+
+void displayEditMenu(TProd *p);
+void editProduct(int cod, FILE *stock);
+void processEditChoice(int choice, TProd *p);
+void posSearchProcess(TProd* p);
+void preRemoveProcess(TProd* p, FILE *stock);
+TProd *searchAndPrintProd(TProd* p, FILE* stock);
+
+
 
 
 #endif

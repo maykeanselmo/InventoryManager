@@ -1,3 +1,4 @@
+#include "UserUtils.h"
 #include "User.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +6,6 @@
 #include <time.h>
 #include <stdarg.h>
 #include <string.h>
-#include "UserUtils.c"
 
 TUser *user(char *name, char *adress,char *cpf) {
     TUser *user = (TUser *) malloc(sizeof(TUser));
@@ -34,6 +34,8 @@ void generateRandomUsers(TUser *users, int count) {
         generateRandomCPF(users[i].cpf);
     }
 }
+
+
 
 void printAllUsers(const char *filename) {
     FILE *file = fopen(filename, "rb"); // Abre o arquivo para leitura binária

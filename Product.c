@@ -27,7 +27,7 @@ void save(TProd *prod, FILE *out){
     fwrite(&prod->value, sizeof(double),1,out);
 }
 
-TProd *read(FILE *in){
+TProd *readProd(FILE *in){
     TProd *prod = (TProd * ) malloc(sizeof(TProd));
     if (0 >= fread(&prod->cod, sizeof(int), 1, in)) {
         free(prod);
@@ -66,10 +66,12 @@ TProd *findProdSequential(int cod, FILE *arq){
     clock_t ti,tf;
 
     TProd *p = NULL;
+
+
     int i = 0;
     rewind(arq);
     ti = clock();
-    while ((p = read(arq)) != NULL){ 
+    while ((p = readProd(arq)) != NULL){ 
         i++;    
         if (p->cod == cod){
             tf = clock();
@@ -84,6 +86,106 @@ TProd *findProdSequential(int cod, FILE *arq){
     
 
 }
+
+void editProduct(int cod, FILE *stock) {
+    TProd *p = findProdSequential(cod, stock);
+    if (p != NULL) {
+        int posi = ftell(stock) - sizeProd(); // Posição do produto no arquivo
+        displayEditMenu(p); // Função que apresentará o menu de edição
+        fseek(stock, posi, SEEK_SET); // Posiciona o cursor no produto
+        save(p, stock); // Salva as alterações
+        free(p); // Libera a memória alocada
+    } else {
+        printf("\nProduto não encontrado...");
+    }
+}
+
+void displayEditMenu(TProd *p) {
+    int op = -1;
+    while (op != 0) {
+        printf("\nSelecione o campo que deseja alterar: ");
+        printf("\n[1] - name");
+        printf("\n[2] - duedate");
+        printf("\n[3] - value");
+        printf("\n[4] - qtd");
+        printf("\n[0] - leave");
+        printf("\nOpção: ");
+        fflush(stdin);
+        scanf("%d", &op);
+        processEditChoice(op, p); // Função que processa a escolha
+    }
+}
+
+
+void processEditChoice(int choice, TProd *p) {
+    switch (choice) {
+        case 1:
+            printf("\nplease enter new name:\n");
+            fflush(stdin);
+            fgets(p->name, sizeof(p->name), stdin);
+            strtok(p->name, "\n"); // Remove o caractere de nova linha
+            break;
+
+        case 2:
+            printf("\nplease enter new dueDate (dd/mm/aaaa):\n");
+            fflush(stdin);
+            fgets(p->due_date, sizeof(p->due_date), stdin);
+            strtok(p->due_date, "\n"); // Remove o caractere de nova linha
+            break;
+
+        case 3:
+            printf("\nplease enter new value:\n");
+            fflush(stdin);
+            scanf("%lf", &p->value);
+            break;
+
+        case 4:
+            printf("\nplease enter new amount:\n");
+            fflush(stdin);
+            scanf("%lu", &p->qtd);
+            break;
+
+        case 0:
+            printf("\nLeaving edit menu...");
+            break;
+
+        default:
+            printf("\nInvalid option!");
+            break;
+    }
+}
+
+void posSearchProcess(TProd* p){
+    int op;
+    if(p!=NULL){
+        printf("\nproduct found.Do you want to print?");
+        printf("\n[0] - not.\n[1] - yes.\n: ");
+            scanf("%d",&op);
+            if(op!=0){
+                printProd(p);
+                return;
+            }else op =0;
+    }else {
+        printf("\nproduct not found.");
+        return;
+        }
+}
+
+TProd *searchAndPrintProd(TProd* p, FILE* stock){
+    p= (TProd*)malloc(sizeof(TProd*));
+                int cod,op,qtd;
+                printf("\nplease enter the code of the product: ");
+                    scanf("%d",&cod);
+                p = findProdSequential(cod,stock);
+                
+                posSearchProcess(p);
+                system("pause");
+    return p;
+}
+
+
+
+
 
 
 
