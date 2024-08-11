@@ -5,7 +5,7 @@
 
 
 int main(){    
-    printf("\nhello");
+    printf("\nhello\nnAA\nAAAA");
     menu();
 
 }

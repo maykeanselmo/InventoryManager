@@ -31,13 +31,13 @@ void printMenu(){
     printf("\n[4] - Add product.");//c
     printf("\n[5] - Create a random User.");//c
     printf("\n[6] - Generate a order.");
-    printf("\n[7] - Finish the order.");
+    printf("\n[7] - .");
     printf("\n[8] - list all base.");//c
     printf("\n[9] - edit a product.");//c
-    printf("\n[10] - edit a order.");
-    printf("\n[11] - remove a order.");//c
-    printf("\n[12] - remove an user.");//c
-    printf("\n[13] - Interleaving and internal classification.");//c
+    printf("\n[10] - .");
+    printf("\n[11] - remove a order.");
+    printf("\n[12] - .");//c
+    printf("\n[13] - Interleaving and internal classification.");//tc
     printf("\n[14] - List all Users.");//c
     printf("\n[15] - Remove a User.");//c
     printf("\n[16] - Search for a user.");//C
@@ -162,7 +162,7 @@ void menu(){
             
             case 15:
 
-                u = user(" "," "," "," ");
+                u = user(" "," "," ");
                     printf("\nplease enter the user cpf : ");
                     fflush(stdin);
                     fgets(u->cpf, sizeof(u->cpf), stdin);
@@ -170,6 +170,12 @@ void menu(){
                 deleteUser(USERSFILE,u->cpf);
                 system("pause");
                 break;
+            
+            
+            case 16:
+
+                break;
+            
 
             
             default:
@@ -223,6 +229,10 @@ void createUser(){
 void createOrder(){
 
 }
+
+void searchUser(){
+
+}
 void finishOrder(){
 
 }
@@ -230,10 +240,7 @@ void listBase(){
     printBase(stock);
 }
 
-void searchUser(){
-     
 
-}
 
 
 
