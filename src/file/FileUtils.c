@@ -2,9 +2,28 @@
 #include "../algorithms/classificacaoInterna.h"
 #include "../algorithms/intercalacaoBasico.h"
 
+double adjust_value(double value) {
+    double factor;
+
+    if (value == 100.0) {
+        factor = 0.1;
+    } else if (value == 1000.0) {
+        factor = 0.01;
+    } else {
+        // Add more conditions as necessary or handle default case
+        factor = 1.0;  // Default factor (no adjustment)
+    }
+
+    return value * factor;
+}
+
 void inteleavingAndIC(FILE* stock){
     rewind(stock);
-    int num_particoes = classificacao_interna(stock, number_of_products(stock) * 0.1);
+
+    int arg_2 = adjust_value(number_of_products(stock) * 0.01);
+
+
+    int num_particoes = classificacao_interna(stock, arg_2);
     rewind(stock);
     intercalacao_basica(stock, num_particoes);
     rewind(stock); 
