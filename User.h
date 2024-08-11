@@ -15,5 +15,6 @@ TUser * user(char *name, char *adress, char *paymentMethod, char *cpf);
 int sizeUser();
 int qtdUserInFile(FILE* file);
 void printUser(TUser *user);
+void generateUserBase(const char *filename, int numberOfUsers);
 
 #endif

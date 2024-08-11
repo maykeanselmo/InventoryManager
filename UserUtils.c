@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "UserUtils.h"
 
 // Função para gerar um CPF aleatório
 void generateRandomCPF(char* cpf) {

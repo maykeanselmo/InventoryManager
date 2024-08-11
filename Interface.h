@@ -1,5 +1,5 @@
-#ifndef INTERFACE_H_INCLUDED
-#define INTERFACE_H_INCLUDED
+#ifndef INTERFACE_H
+#define INTERFACE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +13,6 @@ void createUser();
 void createOrder();
 void listBase();
 void finishOrder();
-void displayEditMenu(TProd *p);
 
 
 #endif

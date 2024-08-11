@@ -1,11 +1,20 @@
 #include "Product.h"
 #include "FileUtils.h"
+#include "classificacaoInterna.h"
+#include "intercalacaoBasico.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 #include <stdarg.h>
 
+void inteleavingAndIC(FILE* stock){
+    rewind(stock);
+    int num_particoes = classificacao_interna(stock, number_of_products(stock) * 0.1);
+    rewind(stock);
+    intercalacao_basica(stock, num_particoes);
+    rewind(stock); 
+}
 void c_ordenate_database(FILE *out, int tam){
     int vet[tam];
     TProd *p;
@@ -61,8 +70,8 @@ TProd *buscaBinariaPorCod(FILE *arq, int cod,int inicio, int fim){
     static int  i =0;
     i++;
     int meio = trunc((inicio+fim)/2);
-    fseek(arq,tamanho_registro()*meio,SEEK_SET);
-    TProd *f = le(arq);
+    fseek(arq,sizeProd()*meio,SEEK_SET);
+    TProd *f = readProd(arq);
     if (f->cod==cod){
         printf("\nNUMERO DE COMPARACOES BINARIA: %d\n",i);
         return f;

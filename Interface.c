@@ -2,18 +2,21 @@
 #include "Interface.h"
 #include "Order.h"
 #include "User.h"
+#include "UserUtils.h"
 #include "FileUtils.h"
 #include "intercalacaoBasico.h"
+#include "classificacaoInterna.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 #include <stdarg.h>
 
+#define USERSFILE "users.dat"
 
 static FILE* stock;
 static TProd *p;
-int op = 0;
+int op,qtd = 0;
 int cod;
 
 
@@ -25,7 +28,7 @@ void printMenu(){
     printf("\n[2] - Search for a product.");//C
     printf("\n[3] - Remove product.");//C
     printf("\n[4] - Add product.");//c
-    printf("\n[5] - Create a User.");//c
+    printf("\n[5] - Create a random User.");//c
     printf("\n[6] - Generate a order.");
     printf("\n[7] - Finish the order.");
     printf("\n[8] - list all base.");//c
@@ -33,6 +36,7 @@ void printMenu(){
     printf("\n[10] - edit a order.");
     printf("\n[11] - remove a order.");//c
     printf("\n[12] - remove an user.");//c
+    printf("\n[13] - Interleaving and internal classification.");//c
     printf("\n[0] - Exit.");
     printf("\n---------------------------------------");
     printf("\nplease enter a value: ");
@@ -72,15 +76,9 @@ void menu(){
                         fflush(stdin);
                         scanf(" %d",&op);
                         if (op !=0){
-                            // Marca o produto como removido, aqui usaremos uma quantidade igual a 0 como exemplo
                             p->qtd = p->qtd-qtd;
-
-                            // Posiciona o cursor no local do produto encontrado
                             fseek(stock, -sizeProd(), SEEK_CUR);
-
-                            // Atualiza o produto no arquivo com a quantidade zero
                             save(p, stock);
-
                             printf("\nProduct removed successfully.");
                             op = 0;
 
@@ -107,10 +105,14 @@ void menu(){
 
 
             case 5:
+                printf("\nplease enter the desired number of users: ");
+                        scanf(" %d",&qtd);
+                generateUserBase(USERSFILE,qtd);
+                system("pause");
                 break;
 
-
             case 6:
+                
                 break;
 
 
@@ -133,6 +135,19 @@ void menu(){
             
             case 10:
                 
+                break;
+            
+            case 11:
+                
+                break;
+            
+            case 12:
+                
+                break;
+            
+            case 13:
+                inteleavingAndIC(stock);
+                system("pause");
                 break;
 
             
@@ -166,12 +181,16 @@ void searchProd(){
     p= (TProd*)malloc(sizeof(TProd*));
     int cod,op;
     printf("\nplease enter the code of the product: ");
-            scanf("%d",&cod);
-    
+        scanf("%d",&cod);
+    printf("\nplease enter search method\n[1] - Sequential\n[2] - Binary");
+        scanf("%d",&op);
+    if(op==1){
+        p = findProdSequential(cod,stock);
+    }else{
+        p = buscaBinariaPorCod(stock,cod,1,number_of_products(stock));
 
-    p = findProdSequential(cod,stock);
+    }
     posSearchProcess(p);
-    
 
 }
 void removeProd(){
@@ -190,21 +209,6 @@ void listBase(){
     printBase(stock);
 }
 
-void displayEditMenu(TProd *p) {
-    int op = -1;
-    while (op != 0) {
-        printf("\nSelecione o campo que deseja alterar: ");
-        printf("\n[1] - name");
-        printf("\n[2] - duedate");
-        printf("\n[3] - value");
-        printf("\n[4] - qtd");
-        printf("\n[0] - leave");
-        printf("\nOpção: ");
-        fflush(stdin);
-        scanf("%d", &op);
-        processEditChoice(op, p); // Função que processa a escolha
-    }
-}
 
 
 
