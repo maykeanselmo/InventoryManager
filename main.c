@@ -5,17 +5,11 @@
 // #include "Order.h"
 // #include "User.h"
 // #include "FileUtils.h"
-#include "Interface.c"
+#include "Interface.h"
 
 
 int main(){    
 
     menu();
-    // TUser *user1 = user("athus","a","b","c");    
-    // TOrder *order1 = order(user1,10,"hj");
-    // orderPrint(order1);
-
-
-    
 
 }
