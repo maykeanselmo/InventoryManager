@@ -9,12 +9,12 @@ void intercalacao_basica(FILE *out, int num_p) {
 
     int fim = 0;
     int particao = 0;
-    char nome[20];
+    char nome[50];
 
     TVet v[num_p];
 
     for (int i = 0; i < num_p; i++) {
-        sprintf(nome, "partition%i.dat", particao);
+        sprintf(nome, "output/partition%i.dat", particao);
         v[i].f = fopen(nome, "rb");
 
         if (v[i].f != NULL) {

@@ -2,28 +2,28 @@
 #include "../algorithms/classificacaoInterna.h"
 #include "../algorithms/intercalacaoBasico.h"
 
-double adjust_value(double value) {
-    double factor;
+#include <math.h>
 
-    if (value == 100.0) {
-        factor = 0.1;
-    } else if (value == 1000.0) {
-        factor = 0.01;
-    } else {
-        // Add more conditions as necessary or handle default case
-        factor = 1.0;  // Default factor (no adjustment)
-    }
-
-    return value * factor;
-}
+// double adjust_value(double value) {
+//     double factor;
+    
+//     // Calculate the number of zeros (n) by taking the logarithm base 10 of the value
+//     int num_zeros = (int)log10(value);
+    
+//     // The factor is calculated as 1 divided by 10 raised to the power of (number of zeros - 1)
+//     factor = 1.0 / pow(10, num_zeros - 1);
+    
+//     return value * factor;
+// }
 
 void inteleavingAndIC(FILE* stock){
     rewind(stock);
 
-    int arg_2 = adjust_value(number_of_products(stock) * 0.01);
+    // int arg_2 = adjust_value(number_of_products(stock) * 0.01);
 
+    // int num_particoes = classificacao_interna(stock, arg_2);
+    int num_particoes = classificacao_interna(stock, number_of_products(stock)*0.1);
 
-    int num_particoes = classificacao_interna(stock, arg_2);
     rewind(stock);
     intercalacao_basica(stock, num_particoes);
     rewind(stock); 
