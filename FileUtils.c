@@ -61,8 +61,8 @@ TProd *buscaBinariaPorCod(FILE *arq, int cod,int inicio, int fim){
     static int  i =0;
     i++;
     int meio = trunc((inicio+fim)/2);
-    fseek(arq,tamanho_registro()*meio,SEEK_SET);
-    TProd *f = le(arq);
+    fseek(arq,sizeProd()*meio,SEEK_SET);
+    TProd *f = readProd(arq);
     if (f->cod==cod){
         printf("\nNUMERO DE COMPARACOES BINARIA: %d\n",i);
         return f;
