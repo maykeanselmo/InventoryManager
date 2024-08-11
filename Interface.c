@@ -1,7 +1,7 @@
 #include "Product.h"
 #include "Interface.h"
 #include "Order.h"
-#include "User.c"
+#include "User.h"
 #include "UserUtils.h"
 #include "FileUtils.h"
 #include "intercalacaoBasico.h"

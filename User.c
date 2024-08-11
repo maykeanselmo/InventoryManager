@@ -1,4 +1,4 @@
-#include "UserUtils.c"
+#include "UserUtils.h"
 #include "User.h"
 #include <stdio.h>
 #include <stdlib.h>

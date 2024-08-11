@@ -1,4 +1,4 @@
-#include "Product.c"
+#include "Product.h"
 #include "FileUtils.h"
 #include "classificacaoInterna.h"
 #include "intercalacaoBasico.h"
