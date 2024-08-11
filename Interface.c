@@ -13,7 +13,6 @@
 
 
 static FILE* stock;
-static FILE* out;
 static TProd *p;
 int op = 0;
 int cod;
@@ -111,14 +110,18 @@ void menu(){
             case 5:
                 
                 rewind(stock);
-                classificacao_interna(stock,1000);
+                int num_particoes = classificacao_interna(stock, number_of_products(stock) * 0.1);
                 rewind(stock);
-                intercalacao_basica(stock,10);
+                intercalacao_basica(stock, num_particoes);
                 rewind(stock);
                 break;
 
-
             case 6:
+                printf("\nplease enter the code: ");
+                    scanf("%d",&cod);
+                p = buscaBinariaPorCod(stock,cod,1,number_of_products(stock));
+                posSearchProcess(p);
+                system("pause");
                 break;
 
 

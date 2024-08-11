@@ -95,7 +95,7 @@ int classificacao_interna(FILE *arq, int M) {
 
         sprintf(nomeParticao, "partition%i.dat", qtdParticoes);
         FILE *p = fopen(nomeParticao, "wb+");
-        if (p == NULL) {
+        if (p == NULL) { 
             printf("Erro criar arquivo de saida\n");
         } else {
             for (int i = 0; i < M; i++) {
