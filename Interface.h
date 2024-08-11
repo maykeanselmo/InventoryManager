@@ -13,5 +13,7 @@ void createUser();
 void createOrder();
 void listBase();
 void finishOrder();
+void displayEditMenu(TProd *p);
+
 
 #endif

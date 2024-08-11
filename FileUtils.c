@@ -52,7 +52,28 @@ void printBase(FILE *out){
 printf("\nPrinting database...\n");
     rewind(out);
     TProd *p;
-    while ((p = read(out)) != NULL)
+    while ((p = readProd(out)) != NULL)
         printProd(p);
     free(p);
+}
+
+TProd *buscaBinariaPorCod(FILE *arq, int cod,int inicio, int fim){
+    static int  i =0;
+    i++;
+    int meio = trunc((inicio+fim)/2);
+    fseek(arq,tamanho_registro()*meio,SEEK_SET);
+    TProd *f = le(arq);
+    if (f->cod==cod){
+        printf("\nNUMERO DE COMPARACOES BINARIA: %d\n",i);
+        return f;
+    }
+    else if(cod> f->cod){
+        return buscaBinariaPorCod(arq,cod, meio,fim);
+    }
+    else if(cod < f->cod){
+        return buscaBinariaPorCod(arq,cod,inicio,meio);
+    }
+    
+    return NULL;
+
 }
