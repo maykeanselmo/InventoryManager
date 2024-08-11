@@ -15,7 +15,6 @@ typedef struct {
     FILE* orderFile; 
     char name[30];
     char address[30];
-    char paymentMethod[20];
     char cpf[12];
 } TUser;
 
@@ -32,10 +31,12 @@ typedef struct Orderlist {
     int numOfTypes;
     char date[11];
     double value;
+    char paymentMethod[20];
+    TProd * products[];
 } TOrder;
 
 /* User Functions */
-TUser* user(char *name, char *address, char *paymentMethod, char *cpf);
+TUser* user(char *name, char *address, char *cpf);
 int sizeUser(void);
 int qtdUserInFile(FILE* file);
 void printUser(TUser *user);
@@ -67,5 +68,9 @@ TProd* searchAndPrintProd(TProd* p, FILE* stock);
 /* Order Functions */
 TOrder* order(TUser* user, int numOfTypes, char *date);
 void orderPrint(TOrder *order);
+int generateRandomProductCode();
+void generateRandomDueDate(char* due_date);
+TProd* createRandomProduct();
+void freeOrder(TOrder* order);
 
 #endif /* STRUCTS_H */

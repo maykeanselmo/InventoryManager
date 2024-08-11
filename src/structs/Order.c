@@ -1,145 +1,127 @@
 #include "../structs.h"
+#include <stdlib.h>
+#include <string.h>
 
 TOrder *readOrder(FILE *in);
 
-TOrder* order(TUser* user, int numOfTypes, char *date){
-    // FILE * orderFile = user->orderFile;
+TOrder* createOrderWithRandomProducts(int numOfTypes, const char* date) {
+    TOrder *order = (TOrder *) malloc(sizeof(TOrder));
+    order->cod = rand();
+    order->numOfTypes = numOfTypes;
+    strcpy(order->date, date);
+    order->value = 0.0;
+    generateRandomPaymentMethod(order->paymentMethod);
 
+    for (int i = 0; i < numOfTypes; i++) {
+        TProd *product = createRandomProduct();
+        order->products[i] = product;
+        order->value += product->value * product->qtd;
+    }
+    return  order;
+}
 
+void printAllOrders(const char* filename) {
+    FILE *file = fopen(filename, "rb"); // Abre o arquivo para leitura binária
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return;
+    }
+
+    TOrder order;
+    while (fread(&order, sizeof(TOrder), 1, file) == 1) { // Lê os pedidos um por um
+        orderPrint(&order);
+
+        for (int i = 0; i < order.numOfTypes; i++) {
+            TProd* product = order.products[i];
+            printf("  Product Code: %d, Name: %s, Quantity: %lu, Value: %.2f, Due Date: %s\n",
+                   product->cod, product->name, product->qtd, product->value, product->due_date);
+        }
+        printf("\n*****************************************");
+    }
+
+    fclose(file);
+}
+void createMultipleOrdersWithRandomProducts(TUser* user, int orderCount) {
     char namefile[sizeof(user->name) + 9];
     strcpy(namefile, user->name);
     strcat(namefile, "order.txt");
 
-    TOrder* order = (TOrder*) malloc(sizeof(TOrder));
-    if ((user->orderFile = fopen(namefile, "w+")) == NULL) {
-        printf("Erro ao abrir arquivo\n");
-        exit(1);
+    FILE* orderFile = fopen(namefile, "wb");
+    if (orderFile == NULL) {
+        printf("Erro ao abrir o arquivo para gravação.\n");
+        return;
     }
 
-    // order->orderList = orderFile;
-    order->value = 0.0;
-    order->cod = rand();
-    strcpy(order->date, date);
-    order->numOfTypes = numOfTypes;
+    for (int i = 0; i < orderCount; i++) {
+        int numOfTypes = rand() % 5 + 1;
+        char date[11];
+        sprintf(date, "%02d/%02d/%04d", rand() % 31 + 1, rand() % 12 + 1, rand() % 5 + 2023);
 
+        TOrder* order = createOrderWithRandomProducts(numOfTypes, date);
 
+        fwrite(order, sizeof(TOrder), 1, orderFile);
 
+        printf("Ordem %d: Código: %d, Data: %s, Valor: %.2f, Número de Tipos: %d\n",
+               i + 1, order->cod, order->date, order->value, order->numOfTypes);
 
-    // c_disorded_database( order->orderList, numOfTypes, numOfTypes-1);
-    // acabou que tive que  reescrever a função, por causa de (order->value += p->value) , pra salvar o valor automaticamente, se n teria que percorrer o arquivo dnv 
-    int vet[numOfTypes];
-    TProd *p;
-    for(int i = 0 ; i<numOfTypes ; i++){
-        vet[i] = i+1;
-    }
-    mix_up(vet,numOfTypes,numOfTypes-1);
-    printf("\nGenerating a order...\n");
-    for(int i = 0 ; i < numOfTypes; i++){
-        p = prod(vet[i], i*10,"PROD", "00/00/0000",10*i);
-        order->value= p->value*p->qtd;
-        save(p,user->orderFile);
-    }
-    free(p);
-
-    printf("\npedido gerado com sucesso");
-
-    return order;
-}
-
-TOrder *findOrderSequential(int cod, FILE *arq){
-    clock_t ti,tf;
-
-    TOrder *p = NULL;
-    int i = 0;
-    rewind(arq);
-    ti = clock();
-    while ((p = (TOrder*)readOrder(arq)) != NULL){
-        i++;
-        if (p->cod == cod){
-            tf = clock();
-            printf("\nTEMPO: %f\n",(double)(tf - ti) / CLOCKS_PER_SEC);
-            printf("\nCOMPARACOES BUSCA SEQUENCIAL: %d\n",i);
-
-            return p;
+        for (int j = 0; j < order->numOfTypes; j++) {
+            free(order->products[j]);
         }
-        free(p);
+        free(order);
     }
-    return p;
 
+    fclose(orderFile);
 }
 
-void delete_record(FILE *order_file, int order_code) {
+void deleteOrder(TUser *user, int orderCode) {
 
-    FILE *temp_file = fopen("temp.bin", "wb");
-    if (!temp_file) {
-        perror("Erro ao criar arquivo temporário");
+    char filename[sizeof(user->name) + 9];
+    strcpy(filename, user->name);
+    strcat(filename, "order.txt");
+
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return;
+    }
+
+    FILE *tempFile = fopen("temp.dat", "wb");
+    if (tempFile == NULL) {
+        printf("Erro ao abrir o arquivo temporário para escrita.\n");
+        fclose(file);
         return;
     }
 
     TOrder order;
     int found = 0;
 
-
-    rewind(order_file);
-
-
-    while (fread(&order, sizeof(TOrder), 1, order_file) == 1) {
-        // Se o código não for igual ao código a ser deletado, escreva no arquivo temporário
-        if (order.cod != order_code) {
-            fwrite(&order, sizeof(TOrder), 1, temp_file);
+    while (fread(&order, sizeof(TOrder ), 1, file)) {
+        if (order.cod != orderCode) {
+            fwrite(&user, sizeof(TUser), 1, tempFile);
         } else {
             found = 1;
         }
     }
 
-
-    fclose(order_file);
-    fclose(temp_file);
-
+    fclose(file);
+    fclose(tempFile);
 
     if (found) {
-        remove("orders.bin"); // Remove o arquivo original
-        rename("temp.bin", "orders.bin"); // Renomeia o temporário para o nome do arquivo original
-        printf("Registro com código %d deletado com sucesso.\n", order_code);
+        remove(filename);
+        rename("temp.dat", filename);
+        printf("Order de codigo %d foi deletado.\n", orderCode);
     } else {
-        remove("temp.bin"); // Remove o arquivo temporário se não houve exclusão
-        printf("Registro com código %d não encontrado.\n", order_code);
+        // Se o CPF não foi encontrado, remova o arquivo temporário
+        remove("temp.dat");
+        printf("Order de codigo %d  não foi encontrado.\n", orderCode);
     }
 }
 
-TOrder *readOrder(FILE *in) {
-    TOrder *prod = (TOrder * ) malloc(sizeof(TOrder ));
-    if (0 >= fread(&prod->cod, sizeof(int), 1, in)) {
-        free(prod);
-        return NULL;
-    }
-    fread(&prod->cod, sizeof(int), 1, in);
-    fread(prod->date, sizeof(char), sizeof(prod->date), in);
-    fread(&prod->numOfTypes, sizeof(char), sizeof(prod->numOfTypes), in);
-    fread(&prod->value, sizeof(double), 1, in);
-    return prod;
-}
-
-
-
-
-void printOrders(FILE *out) {
-    printf("\nImprimindo a base de dados...\n");
-
-    rewind(out);
-    TOrder *order;
-
-    while ((order = readOrder(out)) != NULL) {
-        orderPrint(order);
-    }
-    free(order);
-}
 
 void orderPrint(TOrder *order){
     printf("\n*****************************************");
     printf("\nORDER %d\t\t%s",order->cod,order->date);
-    printf("\nTYPES:%d\t TOTAL: %4.2f",order->numOfTypes,order->value);
+    printf("\nTYPES:%d\t PAYMENTMETHOD: %s TOTAL: %4.2f",order->numOfTypes,order->paymentMethod,order->value);
     printf("\n*****************************************");
 
 }
-
