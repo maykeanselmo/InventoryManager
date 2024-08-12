@@ -116,24 +116,29 @@ void menu(){
                 break;
 
             case 6:
-                    u  = (TUser*)malloc(sizeof(TUser));
+                    u = (TUser*)malloc(sizeof(TUser));
+                    if (u == NULL) {
+                        printf("Erro ao alocar memória.\n");
+                        break;
+                    }
+
                     printf("\nplease enter user's cpf: ");
                     fflush(stdin);
                     fgets(tempCpf, sizeof(tempCpf), stdin);
+                    tempCpf[strcspn(tempCpf, "\n")] = '\0';
                     
-                    // rewind(USERSFILE);
-                    u = userSequentialSearch(USERSFILE,tempCpf);
-                    if(u!= NULL){
+                    u = userSequentialSearch(USERSFILE, tempCpf);
+                    if (u != NULL) {
                         printf("\nplease enter the number of orders: ");
-                            fflush(stdin);
-                            scanf(" %d",&qtd);
-                        createMultipleOrdersWithRandomProducts( u, qtd );
-                        
-                    }else {
-                        printf("\nuser not founded!");
-                        break;
+                        fflush(stdin);
+                        scanf(" %d", &qtd);
+                        createMultipleOrdersWithRandomProducts(u, qtd);
+                        free(u); // Liberar memória após uso
+                    } else {
+                        printf("\nuser not found!");
                     }
                 break;
+
 
 
             case 7:
