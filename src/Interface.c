@@ -1,15 +1,24 @@
+
 #include "structs.h"
 #include "Interface.h"
 #include "file/FileUtils.h"
 #include "algorithms/intercalacaoBasico.h"
 #include "algorithms/classificacaoInterna.h"
+#include <stdarg.h>
+#include <string.h>
 
 #define USERSFILE "users.dat"
 
-static FILE* stock;
+
+static FILE* stock, *temp1;
 static TProd *p;
+static TUser *u;
+static TOrder *o;
 int op,qtd = 0;
 int cod;
+char tempDate[11];
+char tempCpf[11];
+
 
 
 
@@ -21,14 +30,17 @@ void printMenu(){
     printf("\n[3] - Remove product.");//C
     printf("\n[4] - Add product.");//c
     printf("\n[5] - Create a random User.");//c
-    printf("\n[6] - Generate a order.");
-    printf("\n[7] - Finish the order.");
+    printf("\n[6] - Generate a order database   .");
+    printf("\n[7] - Remove a order");
     printf("\n[8] - list all base.");//c
     printf("\n[9] - edit a product.");//c
-    printf("\n[10] - edit a order.");
-    printf("\n[11] - remove a order.");//c
-    printf("\n[12] - remove an user.");//c
-    printf("\n[13] - Interleaving and internal classification.");//c
+    printf("\n[10] - Print all orders");
+    printf("\n[11] - ");
+    printf("\n[12] - .");//c
+    printf("\n[13] - Interleaving and internal classification.");//tc
+    printf("\n[14] - List all Users.");//c
+    printf("\n[15] - Remove a User.");//c
+    printf("\n[16] - Search for a user.");//C
     printf("\n[0] - Exit.");
     printf("\n---------------------------------------");
     printf("\nplease enter a value: ");
@@ -104,7 +116,23 @@ void menu(){
                 break;
 
             case 6:
-                
+                    u  = (TUser*)malloc(sizeof(TUser));
+                    printf("\nplease enter user's cpf: ");
+                    fflush(stdin);
+                    fgets(tempCpf, sizeof(tempCpf), stdin);
+                    
+                    // rewind(USERSFILE);
+                    u = userSequentialSearch(USERSFILE,tempCpf);
+                    if(u!= NULL){
+                        printf("\nplease enter the number of orders: ");
+                            fflush(stdin);
+                            scanf(" %d",&qtd);
+                        createMultipleOrdersWithRandomProducts( u, qtd );
+                        
+                    }else {
+                        printf("\nuser not founded!");
+                        break;
+                    }
                 break;
 
 
@@ -126,6 +154,18 @@ void menu(){
                 break;
             
             case 10:
+                u  = (TUser*)malloc(sizeof(TUser));
+                printf("\nplease enter user's cpf: ");
+                    fflush(stdin);
+                    fgets(tempCpf, sizeof(tempCpf), stdin);
+                printf("\n1 ");
+
+                temp1 = u->orderFile;
+                u = userSequentialSearch(USERSFILE,tempCpf);
+                printf("\n2 ");
+
+                printOrders(temp1);
+                printf("\n3 ");
                 
                 break;
             
@@ -141,6 +181,28 @@ void menu(){
                 inteleavingAndIC(stock);
                 system("pause");
                 break;
+            
+            case 14:
+                printAllUsers(USERSFILE);
+                system("pause");
+                break;
+            
+            case 15:
+
+                u = user(" "," "," ");
+                    printf("\nplease enter the user cpf : ");
+                    fflush(stdin);
+                    fgets(u->cpf, sizeof(u->cpf), stdin);
+
+                deleteUser(USERSFILE,u->cpf);
+                system("pause");
+                break;
+            
+            
+            case 16:
+
+                break;
+            
 
             
             default:
@@ -194,12 +256,17 @@ void createUser(){
 void createOrder(){
 
 }
+
+void searchUser(){
+
+}
 void finishOrder(){
 
 }
 void listBase(){
     printBase(stock);
 }
+
 
 
 

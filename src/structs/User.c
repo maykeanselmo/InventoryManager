@@ -5,6 +5,8 @@
 #include <math.h>
 #include <string.h>
 
+
+
 TUser *user(char *name, char *adress, char *cpf) {
     TUser *user = (TUser *) malloc(sizeof(TUser));
     strcpy(user->name, name);
@@ -13,6 +15,8 @@ TUser *user(char *name, char *adress, char *cpf) {
 
     return user;
 }
+
+
 
 void saveUsers(const char *filename, TUser *users, int count) {
     FILE *file = fopen(filename, "wb");
@@ -23,6 +27,21 @@ void saveUsers(const char *filename, TUser *users, int count) {
     fwrite(users, sizeof(TUser), count, file);
     fclose(file);
 }
+
+
+TUser* readUser(FILE *in) {
+    TUser* user = (TUser*) malloc(sizeof(TUser));
+    if (0 >= fread(&user, sizeof(int), 1, in)) {
+        free(user);
+        return NULL;
+    }
+    fread(user->name, sizeof(char), sizeof(user), in);
+    fread(user->cpf, sizeof(char), sizeof(user->cpf), in);
+    fread(user->address, sizeof(char), sizeof(user->address), in);
+    return user;
+}
+
+
 
 void generateRandomUsers(TUser *users, int count) {
     for (int i = 0; i < count; i++) {
@@ -103,26 +122,57 @@ void generateUserBase(const char *filename, int numberOfUsers) {
     printf("%d usuários foram gerados e salvos em '%s'.\n", numberOfUsers, filename);
 }
 
-TUser *userSequentialSearch(const char *filename, const char *targetCPF) {
-    FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
-        printf("Erro ao abrir o arquivo.\n");
-        return NULL;
-    }
+int number_of_users(FILE* arq){
+    fseek(arq, 0, SEEK_END);
+    int tam = trunc(ftell(arq) / sizeUser());
+    return tam;
+}
 
-    TUser user;
-    while (fread(&user, sizeof(TUser), 1, file) == 1) {
-        if (strcmp(user.cpf, targetCPF) == 0) {
-            fclose(file);
-            TUser *foundUser = (TUser *) malloc(sizeof(TUser));
-            *foundUser = user;
-            return foundUser;
+
+
+TUser *userSequentialSearch(const char *filename, const char *targetCPF) {
+     FILE *file = fopen(filename, "rb");
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo.\n");
+            return NULL;
+        }
+
+    TUser *user;
+    for (int i = 1; i <=number_of_users(file); ++i) {
+        fseek(file,  sizeUser()*i, SEEK_SET);
+        user = readUser(file);
+
+        if (user != NULL && user->cpf == targetCPF) {
+            return user;
         }
     }
-
-    fclose(file);
-    return NULL;
+    return  NULL;
 }
+
+
+
+// TUser *userSequentialSearch(const char *filename, const char *targetCPF) {
+//     FILE *file = fopen(filename, "rb");
+//     if (file == NULL) {
+//         printf("Erro ao abrir o arquivo.\n");
+//         return NULL;
+//     }
+
+//     TUser user;
+//     rewind(file);
+//     while (fread(&user, sizeof(TUser), 1, file) == 1) {
+//         if (strcmp(user.cpf, targetCPF) == 0) {
+//             fclose(file);
+//             TUser *foundUser = (TUser *) malloc(sizeof(TUser));
+//             *foundUser = user;
+//             return foundUser;
+//         }   
+
+//     }
+
+//     fclose(file);
+//     return NULL;
+// }
 
 void updateUser(const char *filename, const char *targetCPF, TUser *updatedUser) {
     FILE *file = fopen(filename, "rb+");

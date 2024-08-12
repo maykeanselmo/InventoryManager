@@ -38,6 +38,7 @@ typedef struct Orderlist {
 /* User Functions */
 TUser* user(char *name, char *address, char *cpf);
 int sizeUser(void);
+int number_of_users(FILE* arq);
 int qtdUserInFile(FILE* file);
 void printUser(TUser *user);
 void generateUserBase(const char *filename, int numberOfUsers);
@@ -45,6 +46,7 @@ void generateRandomCPF(char* cpf);
 void generateRandomName(char* name);
 void generateRandomAddress(char* address);
 void generateRandomPaymentMethod(char* paymentMethod);
+TUser *userSequentialSearch(const char *filename, const char *targetCPF);
 
 /* Product Functions */
 TProd* prod(int cod, int qtd, char *name, char *duedate, double value);
@@ -72,5 +74,11 @@ int generateRandomProductCode();
 void generateRandomDueDate(char* due_date);
 TProd* createRandomProduct();
 void freeOrder(TOrder* order);
+TOrder* createOrderWithRandomProducts(int numOfTypes, const char* date);
+void printOrders(FILE *out);
+TOrder *readOrder(FILE *in);
+// void printAllOrders(TUser *user);
+void createMultipleOrdersWithRandomProducts(TUser* user, int orderCount);
+void deleteOrder(TUser *user, int orderCode);
 
 #endif /* STRUCTS_H */
