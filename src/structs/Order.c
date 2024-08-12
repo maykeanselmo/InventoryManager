@@ -24,6 +24,55 @@ TOrder *readOrder(FILE *in) {
     return order;
 }
 
+TOrder * createOrder(int cod, int numOfTypes,char date[11],double value,char paymentMethod[20]){
+    TOrder *order = (TOrder*) malloc(sizeof(TOrder));
+    if (order == NULL) {
+        return NULL;
+    }
+    order->cod = cod;
+    order->numOfTypes = numOfTypes;
+    strcpy(order->date, date);
+    strcpy(order->paymentMethod, paymentMethod);
+    order->value = value;
+
+    return order;
+}
+
+TOrder *orderSequentialSearch(TUser *user, const char orderCode) {
+
+    char filename[sizeof(user->name) + 10];
+    strcpy(filename, user->name);
+    strcat(filename, "order.dat");
+
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        return NULL;
+    }
+
+    TOrder order;
+    while (fread(&order, sizeof(TOrder ), 1, file)) {
+        if (order.cod == orderCode) {
+            fclose(file);
+            TOrder *foundOrder = (TOrder *) malloc(sizeof(TOrder));
+            if (foundOrder == NULL) {
+                return NULL;
+            }
+            *foundOrder = order;
+            return foundOrder;
+        }
+    }
+
+    fclose(file);
+    return NULL;
+}
+
+void printOneOrder(TUser *user, int order_code){
+    TOrder *foundOrder;
+    foundOrder = orderSequentialSearch(user, order_code);
+    orderPrint(foundOrder);
+    free(foundOrder);
+}
+
 
 TOrder* createOrderWithRandomProducts(int numOfTypes, const char* date) {
     TOrder *order = (TOrder *) malloc(sizeof(TOrder));
@@ -53,98 +102,40 @@ void printOrders(FILE *out) {
     }
 }
 
-// void printAllOrders(TUser* user) {
-//     // Cria o nome do arquivo a partir do nome do usuário
-//     char namefile[sizeof(user->name) + 10]; // sizeof(user->name) + 9 for "order.dat" + 1 for null terminator
-//     strcpy(namefile, user->name);
-//     strcat(namefile, "order.dat");
+int number_of_orders(FILE *file) {
+    fseek(file, 0, SEEK_END);
+    return ftell(file) / sizeUser();
+}
 
-//     // Abre o arquivo para leitura binária
-//     FILE *file = fopen(namefile, "rb");
-//     if (file == NULL) {
-//         printf("Erro ao abrir o arquivo %s para leitura.\n", namefile);
-//         return;
-//     }
+int sizeOrder() {
+    return sizeof(int) * 2        // cod + numOfTypes
+           + sizeof(char) * 11    // date
+           + sizeof(double)       // value
+           + sizeof(char) * 20;   // paymentMethod
+}
 
-//     printf("\nImprimindo todos os pedidos para o usuário %s...\n", user->name);
+void printAllOrders(TUser *user) {
 
-//     // Reposiciona o ponteiro do arquivo para o início
-//     rewind(file);
+    char filename[sizeof(user->name) + 9];
+    strcpy(filename, user->name);
+    strcat(filename, "order.dat");
+    TOrder *f;
 
-//     // Lê e imprime todos os pedidos
-//     TOrder order;
-//     while (fread(&order, sizeof(TOrder), 1, file) == 1) {
-//         orderPrint(&order);
+    FILE *orderFile = fopen(filename, "rb");
 
-//         // Imprime os produtos associados ao pedido
-//         for (int i = 0; i < order.numOfTypes; i++) {
-//             TProd* product = order.products[i];
-//             printf("  Código do Produto: %d, Nome: %s, Quantidade: %lu, Valor: %.2f, Data de Validade: %s\n",
-//                    product->cod, product->name, product->qtd, product->value, product->due_date);
-//         }
-//         printf("\n*****************************************\n");
-//     }
-
-//     // Fecha o arquivo
-//     fclose(file);
-// }
+    if (orderFile == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return;
+    }
+    for (int i = 1; i <= number_of_orders(filename); ++i) {
+        fseek(filename, sizeOrder() * i, SEEK_SET);
+        f = readOrder(filename);
+        orderPrint(f);
+    }
 
 
-// void printAllOrders(TUser* user) {
-
-//     printf("\na");
-//     char namefile[sizeof(user->name) + 9];
-//     strcpy(namefile, user->name);
-//     strcat(namefile, "order.dat");
-//     FILE *file = fopen(namefile, "rb"); // Abre o arquivo para leitura binária
-
-
-//       printf("\nImprimindo a base de dados...\n");
-
-//     rewind(file);
-//     TOrder* o = (TOrder*)malloc(sizeof(TOrder));
-
-//     while ((o = readOrder(file)) != NULL)
-//         orderPrint(o);
-
-//     free(o);
-
-
-
-   
-
-//     fclose(file);
-//     }
-
-// void printAllOrders(TUser* user) {
-//     printf("\na");
-    
-//     // Usando strlen em vez de sizeof
-//     char namefile[strlen(user->name) + 10]; // +10 para "order.dat" e '\0'
-    
-//     strcpy(namefile, user->name);
-//     strcat(namefile, "order.dat");
-    
-//     FILE *file = fopen(namefile, "rb");
-//     if (file == NULL) {
-//         printf("Erro ao abrir o arquivo %s.\n", namefile);
-//         return;
-//     }
-
-//     printf("\nImprimindo a base de dados...\n");
-
-//     // Rewind é desnecessário aqui
-
-//     TOrder* o = (TOrder*)malloc(sizeof(TOrder));
-
-//     while ((o = readOrder(file)) != NULL) {
-//         orderPrint(o);
-//     }
-
-//     free(o);
-//     fclose(file);
-// }
-
+    fclose(orderFile);
+}
 
 void createMultipleOrdersWithRandomProducts(TUser* user, int orderCount) {
     char namefile[sizeof(user->name) + 9];
