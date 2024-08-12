@@ -41,6 +41,7 @@ void printMenu(){
     printf("\n[14] - List all Users.");//c
     printf("\n[15] - Remove a User.");//c
     printf("\n[16] - Search for a user.");//C
+    printf("\n[17] - Remove all users.");//C
     printf("\n[0] - Exit.");
     printf("\n---------------------------------------");
     printf("\nplease enter a value: ");
@@ -201,6 +202,11 @@ void menu(){
             
             case 16:
 
+                break;
+            
+            
+            case 17:
+                deleteAllUsers(USERSFILE);
                 break;
             
 

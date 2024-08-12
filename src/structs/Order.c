@@ -116,34 +116,34 @@ void printOrders(FILE *out) {
 //     fclose(file);
 //     }
 
-// void printAllOrders(TUser* user) {
-//     printf("\na");
+void printAllOrders(TUser* user) {
+    printf("\na");
     
-//     // Usando strlen em vez de sizeof
-//     char namefile[strlen(user->name) + 10]; // +10 para "order.dat" e '\0'
+    // Usando strlen em vez de sizeof
+    char namefile[strlen(user->name) + 10]; // +10 para "order.dat" e '\0'
     
-//     strcpy(namefile, user->name);
-//     strcat(namefile, "order.dat");
+    strcpy(namefile, user->name);
+    strcat(namefile, "order.dat");
     
-//     FILE *file = fopen(namefile, "rb");
-//     if (file == NULL) {
-//         printf("Erro ao abrir o arquivo %s.\n", namefile);
-//         return;
-//     }
+    FILE *file = fopen(namefile, "rb");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo %s.\n", namefile);
+        return;
+    }
 
-//     printf("\nImprimindo a base de dados...\n");
+    printf("\nImprimindo a base de dados...\n");
 
-//     // Rewind é desnecessário aqui
+    // Rewind é desnecessário aqui
 
-//     TOrder* o = (TOrder*)malloc(sizeof(TOrder));
+    TOrder* o = (TOrder*)malloc(sizeof(TOrder));
 
-//     while ((o = readOrder(file)) != NULL) {
-//         orderPrint(o);
-//     }
+    while ((o = readOrder(file)) != NULL) {
+        orderPrint(o);
+    }
 
-//     free(o);
-//     fclose(file);
-// }
+    free(o);
+    fclose(file);
+}
 
 
 void createMultipleOrdersWithRandomProducts(TUser* user, int orderCount) {

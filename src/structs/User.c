@@ -65,6 +65,20 @@ void printAllUsers(const char *filename) {
 
     fclose(file);
 }
+void deleteAllUsers(const char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        exit(1);
+    }
+
+    TUser user;
+    while (fread(&user, sizeof(TUser), 1, file)) {
+        deleteUser(filename,user.cpf);
+    }
+
+    fclose(file);
+}
 
 void deleteUser(const char *filename, const char *cpfToDelete) {
     FILE *file = fopen(filename, "rb");
