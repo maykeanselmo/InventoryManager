@@ -41,12 +41,15 @@ int sizeUser(void);
 int number_of_users(FILE* arq);
 int qtdUserInFile(FILE* file);
 void printUser(TUser *user);
+void printAllUsers(const char *filename);
 void generateUserBase(const char *filename, int numberOfUsers);
 void generateRandomCPF(char* cpf);
 void generateRandomName(char* name);
 void generateRandomAddress(char* address);
 void generateRandomPaymentMethod(char* paymentMethod);
 TUser *userSequentialSearch(const char *filename, const char *targetCPF);
+void deleteUser(const char *filename, const char *cpfToDelete);
+
 
 /* Product Functions */
 TProd* prod(int cod, int qtd, char *name, char *duedate, double value);

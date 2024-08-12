@@ -125,7 +125,7 @@ void menu(){
                     printf("\nplease enter user's cpf: ");
                     fflush(stdin);
                     fgets(tempCpf, sizeof(tempCpf), stdin);
-                    tempCpf[strcspn(tempCpf, "\n")] = '\0';
+                    // tempCpf[strcspn(tempCpf, "\n")] = '\0';
                     
                     u = userSequentialSearch(USERSFILE, tempCpf);
                     if (u != NULL) {
