@@ -4,11 +4,32 @@
 #include <math.h>
 #include <string.h>
 
-TUser *user(char *name, char *address, char *cpf) {
+TUser *createUser(char *name, char *address, char *cpf) {
+    char *namefile = charUserOrderName(name);
+
+    FILE *file = fopen(namefile, "a+");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return NULL;
+    }
+
     TUser *user = (TUser *) malloc(sizeof(TUser));
-    strcpy(user->name, name);
-    strcpy(user->address, address);
-    strcpy(user->cpf, cpf);
+    if (user == NULL) {
+        printf("Erro ao alocar memória para o usuário.\n");
+        fclose(file);
+        return NULL;
+    }
+
+    strncpy(user->name, name, sizeof(user->name) - 1);
+    user->name[sizeof(user->name) - 1] = '\0'; 
+
+    strncpy(user->address, address, sizeof(user->address) - 1);
+    user->address[sizeof(user->address) - 1] = '\0'; 
+
+    strncpy(user->cpf, cpf, sizeof(user->cpf) - 1);
+    user->cpf[sizeof(user->cpf) - 1] = '\0'; 
+
+    fclose(file);
     return user;
 }
 
@@ -22,14 +43,24 @@ void saveUsers(const char *filename, TUser *users, int count) {
     fclose(file);
 }
 
-TUser *readUser(FILE *in) {
+TUser *readUser(const char *filename) {
+    FILE *in = fopen(filename, "rb");
+    if (in == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return NULL;
+    }
+    
     TUser *user = (TUser *) malloc(sizeof(TUser));
     if (fread(user, sizeof(TUser), 1, in) <= 0) {
         free(user);
+        fclose(in);
         return NULL;
     }
+    
+    fclose(in);
     return user;
 }
+
 
 void generateRandomUsers(TUser *users, int count) {
     for (int i = 0; i < count; i++) {
@@ -48,7 +79,7 @@ void printAllUsers(const char *filename) {
 
     TUser user;
     while (fread(&user, sizeof(TUser), 1, file)) {
-        printUser(&user);
+        printUser(user);
     }
 
     fclose(file);
@@ -83,14 +114,21 @@ void deleteUser(const char *filename, const char *cpfToDelete) {
     fclose(tempFile);
 
     if (found) {
-        remove(filename);
-        rename("temp.dat", filename);
+        if (remove(filename) != 0) {
+            printf("Erro ao remover o arquivo original.\n");
+            return;
+        }
+        if (rename("temp.dat", filename) != 0) {
+            printf("Erro ao renomear o arquivo temporário.\n");
+            return;
+        }
         printf("Usuário com CPF %s foi deletado.\n", cpfToDelete);
     } else {
         remove("temp.dat");
         printf("Usuário com CPF %s não foi encontrado.\n", cpfToDelete);
     }
 }
+
 
 void generateUserBase(const char *filename, int numberOfUsers) {
     TUser *users = (TUser *) malloc(numberOfUsers * sizeof(TUser));
@@ -103,7 +141,7 @@ void generateUserBase(const char *filename, int numberOfUsers) {
     saveUsers(filename, users, numberOfUsers);
     free(users);
 
-    printf("%d usuários foram gerados e salvos em '%s'.\n", numberOfUsers, filename);
+    printf("%d users were generated and saved in '%s'.\n", numberOfUsers, filename);
 }
 
 int sizeUser() {
@@ -121,27 +159,32 @@ int number_of_users(FILE *file) {
 TUser *userSequentialSearch(const char *filename, const char *targetCPF) {
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
+        perror("Erro ao abrir o arquivo");
         return NULL;
     }
 
-    TUser user;
-    while (fread(&user, sizeof(TUser), 1, file)) {
-        if (strcmp(user.cpf, targetCPF) == 0) {
+    TUser *user = (TUser *) malloc(sizeof(TUser)); 
+    if (user == NULL) {
+        perror("Erro ao alocar memória");
+        fclose(file);
+        return NULL; 
+    }
+
+    while (fread(user, sizeof(TUser), 1, file)) { 
+        if (strcmp(user->cpf, targetCPF) == 0) {
             fclose(file);
-            TUser *foundUser = (TUser *) malloc(sizeof(TUser));
-            if (foundUser == NULL) {
-                return NULL;
-            }
-            *foundUser = user;
-            return foundUser;
+            return user;
         }
     }
 
+    if (ferror(file)) {
+        fprintf(stderr, "Erro ao ler o arquivo\n");
+    }
+
     fclose(file);
-    return NULL;
+    free(user); 
+    return NULL; 
 }
-
-
 
 void updateUser(const char *filename, const char *targetCPF, TUser *updatedUser) {
     FILE *file = fopen(filename, "rb+");
@@ -173,9 +216,19 @@ void updateUser(const char *filename, const char *targetCPF, TUser *updatedUser)
     fclose(file);
 }
 
-void printUser(TUser *user) {
+void printUser(TUser user) {
     printf("\n*****************************************");
-    printf("\nUSER\t%s\tCPF\t%s", user->name, user->cpf);
-    printf("\nADDRESS:%s", user->address);
+    printf("\nUSER\t%s\tCPF\t%s", user.name, user.cpf);
+    printf("\nADDRESS:%s", user.address);
     printf("\n*****************************************");
+}
+
+char* charUserOrderName(char name[]) {
+    char* namefile = (char*) malloc(strlen(name) + 11);
+    if (namefile == NULL) {
+        return NULL; 
+    }
+    strcpy(namefile, name);
+    strcat(namefile, "order.dat");
+    return namefile;
 }

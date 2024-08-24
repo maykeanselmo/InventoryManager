@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../structs.h"
+#include <stdbool.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 void c_ordenate_database(FILE *out, int tam);
 
@@ -14,5 +18,9 @@ void printBase(FILE *out);
 TProd *buscaBinariaPorCod(FILE *arq, int cod,int inicio, int fim);
 
 void inteleavingAndIC(FILE* stock);
+
+double generateRandomValue();
+
+bool checkIfFolderExist(const char *directory);
 
 #endif 

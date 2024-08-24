@@ -2,184 +2,265 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TOrder *readOrder(FILE *in);
 
-void orderPrint(TOrder *order){
-    printf("\n*****************************************");
-    printf("\nORDER %d\t\t%s",order->cod,order->date);
-    printf("\nTYPES:%d\t PAYMENTMETHOD: %s TOTAL: %4.2f",order->numOfTypes,order->paymentMethod,order->value);
-    printf("\n*****************************************");
+void orderPrint(TOrder *order) {
+    printf("\n*****************************************\n");
+    printf("ORDER %d             %s\n", order->cod, order->date);
+    printf("TYPES:%d         PAYMENTMETHOD: %s\n", order->numOfTypes, order->paymentMethod);
+    printf("\nTOTAL: %.2f\n", order->value);
+    printf("*****************************************\n");
 
+    TProdNode *current = order->products;
+    while (current != NULL) {
+        printf("Product ID: %d, Name: %s, Quantity: %d, Price: %.2f\n",
+               current->product->cod, current->product->name,
+               current->product->qtd, current->product->value);
+        current = current->next;
+    }
+    printf("*****************************************\n");
 }
+
 
 TOrder *readOrder(FILE *in) {
     TOrder *order = (TOrder*) malloc(sizeof(TOrder));
-    if (0 >= fread(&order->cod, sizeof(int), 1, in)) {
-        free(order);
-        return NULL;
-    }
+
+    fread(&order->cod, sizeof(int), 1, in);
+    fread(&order->numOfTypes, sizeof(int), 1, in);
     fread(order->date, sizeof(char), sizeof(order->date), in);
     fread(order->paymentMethod, sizeof(char), sizeof(order->paymentMethod), in);
-    fread(&order->value, sizeof(double ), sizeof(order->value), in);
+    fread(&order->value, sizeof(double), 1, in);
+
+    order->products = NULL; 
+
+    return order;
+}
+
+TOrder *readOrderWithProd(FILE *in) {
+    TOrder *order = readOrder(in);
+    if (order == NULL) {
+        return NULL; 
+    }
+    
+    TProdNode *currentNode;
+    TProdNode *headNode;
+
+    for (int i = 0; i<order->numOfTypes ; i++){
+        TProd *product = (TProd*)malloc(sizeof(TProd));
+        if(product == NULL){
+            freeProductList(headNode);
+            free(order);
+        }
+
+        fread(product,sizeof(TProd),1,in);
+        TProdNode *newNode = criaNo(product);
+        if(newNode == NULL){
+            freeProductList(newNode);
+            free(order);
+            return NULL;
+        }
+        if (headNode == NULL){
+            headNode = newNode;
+        }else{
+            currentNode->next = newNode;
+        }
+        order->products = headNode;
+    }
     return order;
 }
 
 
+
+
 TOrder* createOrderWithRandomProducts(int numOfTypes, const char* date) {
     TOrder *order = (TOrder *) malloc(sizeof(TOrder));
+    if (order == NULL) {
+        printf("Erro ao alocar memória para o pedido.\n");
+        return NULL;
+    }
+
     order->cod = rand();
     order->numOfTypes = numOfTypes;
     strcpy(order->date, date);
     order->value = 0.0;
     generateRandomPaymentMethod(order->paymentMethod);
 
+    order->products = NULL;
+    TProdNode *lastnode = NULL;
     for (int i = 0; i < numOfTypes; i++) {
         TProd *product = createRandomProduct();
-        order->products[i] = product;
+        TProdNode *newNode = (TProdNode *)malloc(sizeof(TProdNode));
+        if(newNode == NULL){
+            freeProductList(newNode);
+            free(product);
+            free(order);
+            return NULL;
+        }
+        newNode->product = product;
+        newNode->next = NULL;
+        if(order->products == NULL){
+            order->products = newNode;
+        }else {
+            lastnode->next = newNode;
+        }
+        lastnode = newNode;
         order->value += product->value * product->qtd;
     }
-    return  order;
+    printf("\norder %d created successfully...", order->cod);
+    return order;
 }
 
-void printOrders(FILE *out) {
-    printf("\nImprimindo a base de dados...\n");
-    // rewind(out);
-    TOrder *order = (TOrder *) malloc(sizeof(TOrder));
+int qtdOrderInFile(FILE *file){
+    fseek(file, 0, SEEK_END);
+    rewind(file);
+    return (int)(ftell(file) / sizeof(TOrder));
+}
 
-    while ((order = readOrder(out)) != NULL) {
-        printf("\na");
-        orderPrint(order);
-        free(order);
+void printAllOrders(TUser* user) {
+    FILE *file = fopen(charUserOrderName(user->name), "rb");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return;
     }
+
+    printf("\nPrinting %s's orders...\n", user->name);
+    
+    TOrder order;
+    while (fread(&order.cod, sizeof(int), 1, file) == 1) {
+        fread(&order.numOfTypes, sizeof(int), 1, file);
+        fread(order.date, sizeof(char), sizeof(order.date), file);
+        fread(order.paymentMethod, sizeof(char), sizeof(order.paymentMethod), file);
+        fread(&order.value, sizeof(double), 1, file);
+
+        order.products = NULL;
+        TProdNode *lastNode = NULL;
+
+        if (order.numOfTypes > 0) {
+            for (int i = 0; i < order.numOfTypes; i++) {
+                TProd *product = (TProd *)malloc(sizeof(TProd));
+                if (product == NULL) {
+                    printf("Erro ao alocar memória para o produto.\n");
+                    fclose(file);
+                    return;
+                }
+
+                fread(product, sizeof(TProd), 1, file);
+
+                TProdNode *newNode = (TProdNode *)malloc(sizeof(TProdNode));
+                if (newNode == NULL) {
+                    printf("Erro ao alocar memória para o nó da lista de produtos.\n");
+                    free(product);
+                    fclose(file);
+                    return;
+                }
+
+                newNode->product = product;
+                newNode->next = NULL;
+
+                if (order.products == NULL) {
+                    order.products = newNode;
+                } else {
+                    lastNode->next = newNode;
+                }
+                lastNode = newNode;
+            }
+        }
+
+        orderPrint(&order);
+
+        TProdNode *current = order.products;
+        while (current != NULL) {
+            TProdNode *toFree = current;
+            current = current->next;
+            free(toFree->product); 
+            free(toFree);
+        }
+        order.products = NULL; 
+
+    }
+
+    fclose(file);
+}
+ 
+
+int orderSize(){
+     return sizeof(int) * 2 
+        + sizeof(char) * 11 
+        + sizeof(char) * 20 
+        + sizeof(double); 
 }
 
-// void printAllOrders(TUser* user) {
-//     // Cria o nome do arquivo a partir do nome do usuário
-//     char namefile[sizeof(user->name) + 10]; // sizeof(user->name) + 9 for "order.dat" + 1 for null terminator
-//     strcpy(namefile, user->name);
-//     strcat(namefile, "order.dat");
+void saveOrder(TOrder* order, const char *filename){
+    FILE *orderfile = fopen(filename, "wb"); 
+    if (orderfile == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
 
-//     // Abre o arquivo para leitura binária
-//     FILE *file = fopen(namefile, "rb");
-//     if (file == NULL) {
-//         printf("Erro ao abrir o arquivo %s para leitura.\n", namefile);
-//         return;
-//     }
-
-//     printf("\nImprimindo todos os pedidos para o usuário %s...\n", user->name);
-
-//     // Reposiciona o ponteiro do arquivo para o início
-//     rewind(file);
-
-//     // Lê e imprime todos os pedidos
-//     TOrder order;
-//     while (fread(&order, sizeof(TOrder), 1, file) == 1) {
-//         orderPrint(&order);
-
-//         // Imprime os produtos associados ao pedido
-//         for (int i = 0; i < order.numOfTypes; i++) {
-//             TProd* product = order.products[i];
-//             printf("  Código do Produto: %d, Nome: %s, Quantidade: %lu, Valor: %.2f, Data de Validade: %s\n",
-//                    product->cod, product->name, product->qtd, product->value, product->due_date);
-//         }
-//         printf("\n*****************************************\n");
-//     }
-
-//     // Fecha o arquivo
-//     fclose(file);
-// }
-
-
-// void printAllOrders(TUser* user) {
-
-//     printf("\na");
-//     char namefile[sizeof(user->name) + 9];
-//     strcpy(namefile, user->name);
-//     strcat(namefile, "order.dat");
-//     FILE *file = fopen(namefile, "rb"); // Abre o arquivo para leitura binária
-
-
-//       printf("\nImprimindo a base de dados...\n");
-
-//     rewind(file);
-//     TOrder* o = (TOrder*)malloc(sizeof(TOrder));
-
-//     while ((o = readOrder(file)) != NULL)
-//         orderPrint(o);
-
-//     free(o);
-
-
-
-   
-
-//     fclose(file);
-//     }
-
-// void printAllOrders(TUser* user) {
-//     printf("\na");
+    fwrite(&order->cod, sizeof(int), 1, orderfile);
+    fwrite(&order->numOfTypes, sizeof(int), 1, orderfile);
+    fwrite(order->date, sizeof(char), sizeof(order->date), orderfile);
+    fwrite(order->paymentMethod, sizeof(char), sizeof(order->paymentMethod), orderfile);
+    fwrite(&order->value, sizeof(double),1,orderfile);
     
-//     // Usando strlen em vez de sizeof
-//     char namefile[strlen(user->name) + 10]; // +10 para "order.dat" e '\0'
-    
-//     strcpy(namefile, user->name);
-//     strcat(namefile, "order.dat");
-    
-//     FILE *file = fopen(namefile, "rb");
-//     if (file == NULL) {
-//         printf("Erro ao abrir o arquivo %s.\n", namefile);
-//         return;
-//     }
+}
+void saveOrderInUserFile(TOrder* order, TUser* user) {
+    char *filename = charUserOrderName(user->name);
+    FILE *userOrderfile = fopen(filename, "ab"); // "ab" para adicionar no final do arquivo
+    if (userOrderfile == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
 
-//     printf("\nImprimindo a base de dados...\n");
+    fwrite(&order->cod, sizeof(int), 1, userOrderfile);
+    fwrite(&order->numOfTypes, sizeof(int), 1, userOrderfile);
+    fwrite(order->date, sizeof(char), sizeof(order->date), userOrderfile);
+    fwrite(order->paymentMethod, sizeof(char), sizeof(order->paymentMethod), userOrderfile);
+    fwrite(&order->value, sizeof(double), 1, userOrderfile);
 
-//     // Rewind é desnecessário aqui
+    TProdNode *current = order->products;
+    while (current != NULL) {
+        fwrite(current->product, sizeof(TProd), 1, userOrderfile);
+        current = current->next;
+    }
 
-//     TOrder* o = (TOrder*)malloc(sizeof(TOrder));
+    fclose(userOrderfile);
+}
 
-//     while ((o = readOrder(file)) != NULL) {
-//         orderPrint(o);
-//     }
 
-//     free(o);
-//     fclose(file);
-// }
 
 
 void createMultipleOrdersWithRandomProducts(TUser* user, int orderCount) {
-    char namefile[sizeof(user->name) + 9];
+    char namefile[strlen(user->name) + 10];
     strcpy(namefile, user->name);
     strcat(namefile, "order.dat");
 
-    FILE* orderFile = fopen(namefile, "wb");
+    FILE* orderFile = fopen(namefile, "ab");
     if (orderFile == NULL) {
         printf("Erro ao abrir o arquivo para gravação.\n");
         return;
     }
 
     for (int i = 0; i < orderCount; i++) {
-        int numOfTypes = rand() % 5 + 1;
+        int numOfTypes = rand() % 5 + 1;  
         char date[11];
         sprintf(date, "%02d/%02d/%04d", rand() % 31 + 1, rand() % 12 + 1, rand() % 5 + 2023);
 
         TOrder* order = createOrderWithRandomProducts(numOfTypes, date);
-
-        fwrite(order, sizeof(TOrder), 1, orderFile);
-
-        printf("Ordem %d: Código: %d, Data: %s, Valor: %.2f, Número de Tipos: %d\n",
-               i + 1, order->cod, order->date, order->value, order->numOfTypes);
-
-        for (int j = 0; j < order->numOfTypes; j++) {
-            free(order->products[j]);
+        if (order == NULL) {
+            printf("Erro ao criar a ordem %d.\n", i + 1);
+            continue; 
         }
-        free(order);
+
+        saveOrderInUserFile(order,user);
+        free(order);  
     }
 
     fclose(orderFile);
 }
 
-void deleteOrder(TUser *user, int orderCode) {
 
+
+void deleteOrder(TUser *user, int orderCode) {
     char filename[sizeof(user->name) + 9];
     strcpy(filename, user->name);
     strcat(filename, "order.dat");
@@ -200,11 +281,67 @@ void deleteOrder(TUser *user, int orderCode) {
     TOrder order;
     int found = 0;
 
-    while (fread(&order, sizeof(TOrder ), 1, file)) {
+    while (fread(&order.cod, sizeof(int), 1, file) == 1) {
+        fread(&order.numOfTypes, sizeof(int), 1, file);
+        fread(order.date, sizeof(char), sizeof(order.date), file);
+        fread(order.paymentMethod, sizeof(char), sizeof(order.paymentMethod), file);
+        fread(&order.value, sizeof(double), 1, file);
+
+        TProdNode *head = NULL;
+        TProdNode *tail = NULL;
+        for (int i = 0; i < order.numOfTypes; i++) {
+            TProd *product = (TProd *)malloc(sizeof(TProd));
+            if (product == NULL) {
+                printf("Erro ao alocar memória para produto.\n");
+                fclose(file);
+                fclose(tempFile);
+                return;
+            }
+            fread(product, sizeof(TProd), 1, file);
+
+            TProdNode *node = (TProdNode *)malloc(sizeof(TProdNode));
+            if (node == NULL) {
+                printf("Erro ao alocar memória para nó da lista.\n");
+                fclose(file);
+                fclose(tempFile);
+                return;
+            }
+            node->product = product;
+            node->next = NULL;
+
+            if (head == NULL) {
+                head = node;
+                tail = node;
+            } else {
+                tail->next = node;
+                tail = node;
+            }
+        }
+
         if (order.cod != orderCode) {
-            fwrite(&user, sizeof(TUser), 1, tempFile);
+            fwrite(&order.cod, sizeof(int), 1, tempFile);
+            fwrite(&order.numOfTypes, sizeof(int), 1, tempFile);
+            fwrite(order.date, sizeof(char), sizeof(order.date), tempFile);
+            fwrite(order.paymentMethod, sizeof(char), sizeof(order.paymentMethod), tempFile);
+            fwrite(&order.value, sizeof(double), 1, tempFile);
+
+            TProdNode *current = head;
+            while (current != NULL) {
+                fwrite(current->product, sizeof(TProd), 1, tempFile);
+                TProdNode *next = current->next;
+                free(current->product);
+                free(current);
+                current = next;
+            }
         } else {
             found = 1;
+            TProdNode *current = head;
+            while (current != NULL) {
+                TProdNode *next = current->next;
+                free(current->product);
+                free(current);
+                current = next;
+            }
         }
     }
 
@@ -216,10 +353,8 @@ void deleteOrder(TUser *user, int orderCode) {
         rename("temp.dat", filename);
         printf("Order de codigo %d foi deletado.\n", orderCode);
     } else {
-        // Se o CPF não foi encontrado, remova o arquivo temporário
         remove("temp.dat");
-        printf("Order de codigo %d  não foi encontrado.\n", orderCode);
+        printf("Order de codigo %d não foi encontrado.\n", orderCode);
     }
 }
-
 

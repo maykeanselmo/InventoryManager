@@ -1,5 +1,7 @@
 #include "../structs.h"
 #include "intercalacaoBasico.h"
+#include <limits.h>  // Inclua para INT_MAX
+#include <stdio.h>   // Inclua para FILE e funções relacionadas
 
 void intercalacao_basica(FILE *out, int num_p) {
     typedef struct vetor {
@@ -14,7 +16,7 @@ void intercalacao_basica(FILE *out, int num_p) {
     TVet v[num_p];
 
     for (int i = 0; i < num_p; i++) {
-        sprintf(nome, "output/partition%i.dat", particao);
+        sprintf(nome, "partitions/partition%i.dat", particao);
         v[i].f = fopen(nome, "rb");
 
         if (v[i].f != NULL) {
@@ -25,7 +27,8 @@ void intercalacao_basica(FILE *out, int num_p) {
                 v[i].prod = pdct;
             }
         } else {
-            fim = 1;
+            v[i].prod = prod(INT_MAX, 0, "", "", 0.0); 
+            fim = 1; 
         }
         particao++;
     }
@@ -41,10 +44,11 @@ void intercalacao_basica(FILE *out, int num_p) {
             }
         }
 
-        if (menor == INT_MAX) {
+        if (pos_menor == -1) {
             fim = 1;
         } else {
             save(v[pos_menor].prod, out);
+
             TProd *pdct = readProd(v[pos_menor].f);
             if (pdct == NULL) {
                 v[pos_menor].prod = prod(INT_MAX, 0, "", "", 0.0);

@@ -1,6 +1,7 @@
 #include "../structs.h"
 #include "../algorithms/classificacaoInterna.h"
 #include "../algorithms/intercalacaoBasico.h"
+#include "../file/FileUtils.h"
 
 #include <math.h>
 
@@ -18,10 +19,6 @@
 
 void inteleavingAndIC(FILE* stock){
     rewind(stock);
-
-    // int arg_2 = adjust_value(number_of_products(stock) * 0.01);
-
-    // int num_particoes = classificacao_interna(stock, arg_2);
     int num_particoes = classificacao_interna(stock, number_of_products(stock)*0.1);
 
     rewind(stock);
@@ -64,7 +61,8 @@ void c_disorded_database(FILE *out, int tam, int exchanges){
     mix_up(vet,tam,exchanges);
     printf("\nGenerating a disorded database...\n");
     for(int i = 0 ; i < tam; i++){
-        p = prod(vet[i], i*10,"PROD", "00/00/0000",10*i);
+        double temp = generateRandomValue();
+        p = prod(vet[i], i*10,"PROD", "00/00/0000",temp);
         save(p,out);
     }
     free(p);
@@ -98,4 +96,19 @@ TProd *buscaBinariaPorCod(FILE *arq, int cod,int inicio, int fim){
     
     return NULL;
 
+}
+
+bool checkIfFolderExist(const char *directory){
+    struct stat info;
+    if(stat(directory,&info)!= 0){
+        return false;
+    }else if(info.st_mode & S_IFDIR){
+        return true;
+    }
+    return false;
+}
+
+
+double generateRandomValue() {
+    return (double) (rand() % 10000);
 }
