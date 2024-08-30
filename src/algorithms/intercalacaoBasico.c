@@ -16,7 +16,7 @@ void intercalacao_basica(FILE *out, int num_p) {
     TVet v[num_p];
 
     for (int i = 0; i < num_p; i++) {
-        sprintf(nome, "partitions/partition%i.dat", particao);
+        sprintf(nome, "src/partitions/partition%i.dat", particao);
         v[i].f = fopen(nome, "rb");
 
         if (v[i].f != NULL) {

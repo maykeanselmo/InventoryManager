@@ -18,6 +18,7 @@ void printBase(FILE *out);
 TProd *buscaBinariaPorCod(FILE *arq, int cod,int inicio, int fim);
 
 void inteleavingAndIC(FILE* stock);
+void selecaoSubstE_ESCOLHEOMETODOMAYKE(FILE* stock);
 
 double generateRandomValue();
 

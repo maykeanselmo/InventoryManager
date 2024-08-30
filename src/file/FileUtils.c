@@ -1,28 +1,25 @@
 #include "../structs.h"
 #include "../algorithms/classificacaoInterna.h"
 #include "../algorithms/intercalacaoBasico.h"
+#include "../algorithms/selecaoporsubstituicao.h"
 #include "../file/FileUtils.h"
 
 #include <math.h>
-
-// double adjust_value(double value) {
-//     double factor;
-    
-//     // Calculate the number of zeros (n) by taking the logarithm base 10 of the value
-//     int num_zeros = (int)log10(value);
-    
-//     // The factor is calculated as 1 divided by 10 raised to the power of (number of zeros - 1)
-//     factor = 1.0 / pow(10, num_zeros - 1);
-    
-//     return value * factor;
-// }
-
 void inteleavingAndIC(FILE* stock){
     rewind(stock);
     int num_particoes = classificacao_interna(stock, number_of_products(stock)*0.1);
 
     rewind(stock);
     intercalacao_basica(stock, num_particoes);
+    rewind(stock); 
+}
+void selecaoSubstE_ESCOLHEOMETODOMAYKE(FILE* stock){
+    rewind(stock);
+    int num_particoes = selecao_por_substituicao(stock, number_of_products(stock)*0.001);
+    printf("\ndeu bom");
+
+    rewind(stock);
+    //funcao do metodo que vc escolheu
     rewind(stock); 
 }
 void c_ordenate_database(FILE *out, int tam){

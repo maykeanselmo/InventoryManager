@@ -4,6 +4,7 @@
 #include "file/FileUtils.h"
 #include "algorithms/intercalacaoBasico.h"
 #include "algorithms/classificacaoInterna.h"
+#include "algorithms/selecaoporsubstituicao.h"
 #include <stdarg.h>
 #include <string.h>
 
@@ -15,6 +16,8 @@ static TProd *p;
 static TUser *u;
 static TOrder *o;
 int op,qtd = 0;
+int l = 1;
+int opt = 0;
 int cod;
 int k = 33;
 char tempDate[11];
@@ -38,7 +41,7 @@ PRIVATE int printMenu(void){
     printf("\n[10] - Print all orders");
     printf("\n[11] - ");
     printf("\n[12] - .");//c
-    printf("\n[13] - Interleaving and internal classification.");//tc
+    printf("\n[13] - organize files in secondary memory.");//tc
     printf("\n[14] - List all Users.");//c
     printf("\n[15] - Remove a User.");//c
     printf("\n[16] - Search for a user.");//C
@@ -165,10 +168,11 @@ void menu(){
                 fgets(tempCpf, sizeof(tempCpf), stdin);
                 user = userSequentialSearch(USERSFILE,tempCpf);
                 if (user!=NULL){
-                    // printOrders(user->orderFile);
+                    printAllOrders(user);
                 }
                 else
                     printf("\nUser not founded");
+
                 system("pause");
                 break;
             
@@ -181,8 +185,31 @@ void menu(){
                 break;
             
             case 13:
-                inteleavingAndIC(stock);
-                system("pause");
+                l=-1;
+                while(l!=0){
+                    printf("\nplease enter the method:\n");
+                    printf("\n[1] - ClassificacaoInterna&IntercalacaoBasica.\n[2] - SelecaoPorSubstituicao&...\n[0] -exit\n ");
+                    scanf("%d",&op);
+                    switch (op){
+                        case 1:
+                            inteleavingAndIC(stock);
+                            l = 0;
+                            break;                        
+                        
+                        case 2:
+                            selecaoSubstE_ESCOLHEOMETODOMAYKE(stock);
+                            l = 0;
+                            break;                        
+                        
+                        case 0:
+                            l = 0;
+                            break;                        
+                        
+                        default:
+                            printf("\nopção inválida...");
+                            break;
+                    }
+                }
                 break;
             
             case 14:
