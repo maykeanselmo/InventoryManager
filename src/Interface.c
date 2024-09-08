@@ -188,7 +188,7 @@ void menu(){
                 l=-1;
                 while(l!=0){
                     printf("\nplease enter the method:\n");
-                    printf("\n[1] - ClassificacaoInterna&IntercalacaoBasica.\n[2] - SelecaoPorSubstituicao&...\n[0] -exit\n ");
+                    printf("\n[1] - ClassificacaoInterna&IntercalacaoBasica.\n[2] - SelecaoPorSubstituicao&IntercalacaoOtima\n[0] -exit\n ");
                     scanf("%d",&op);
                     switch (op){
                         case 1:

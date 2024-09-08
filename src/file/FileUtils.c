@@ -2,9 +2,11 @@
 #include "../algorithms/classificacaoInterna.h"
 #include "../algorithms/intercalacaoBasico.h"
 #include "../algorithms/selecaoporsubstituicao.h"
+#include "../algorithms/intercalacaoOtima.h"
 #include "../file/FileUtils.h"
-
 #include <math.h>
+#define  NUM_MAX_ARQUIVOS_MANIPULADOS 3
+
 void inteleavingAndIC(FILE* stock){
     rewind(stock);
     int num_particoes = classificacao_interna(stock, number_of_products(stock)*0.1);
@@ -19,7 +21,7 @@ void selecaoSubstE_ESCOLHEOMETODOMAYKE(FILE* stock){
     printf("\ndeu bom");
 
     rewind(stock);
-    //funcao do metodo que vc escolheu
+    intercalaoOtima(stock,NUM_MAX_ARQUIVOS_MANIPULADOS);
     rewind(stock); 
 }
 void c_ordenate_database(FILE *out, int tam){
