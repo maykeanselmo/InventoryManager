@@ -10,6 +10,10 @@
 #include <string.h>
 #include <limits.h>
 
+#define bool  int
+#define FALSE 0
+#define TRUE  1
+
 /* Struct Definitions */
 typedef struct {
     FILE* orderFile; 
@@ -26,28 +30,39 @@ typedef struct Produto {
     double value;
 } TProd;
 
-typedef struct Orderlist {
+typedef struct ProductNode {
+    TProd *product; 
+    struct ProductNode *next;
+} TProdNode;
+
+typedef struct {
     int cod;
     int numOfTypes;
     char date[11];
     double value;
     char paymentMethod[20];
-    TProd * products[];
+    TProdNode *products;
 } TOrder;
 
+
 /* User Functions */
-TUser* user(char *name, char *address, char *cpf);
+TUser *createUser(char *name, char *address, char *cpf);
 int sizeUser(void);
 int number_of_users(FILE* arq);
+void saveUsers(const char *filename, TUser *users, int count);
+TUser *readUser(const char *filename);
 int qtdUserInFile(FILE* file);
-void printUser(TUser *user);
+void printUser(TUser user);
 void printAllUsers(const char *filename);
+void generateRandomUsers(TUser *users, int count);
 void generateUserBase(const char *filename, int numberOfUsers);
 void generateRandomCPF(char* cpf);
+char* charUserOrderName(char name[]);
 void generateRandomName(char* name);
 void generateRandomAddress(char* address);
 void generateRandomPaymentMethod(char* paymentMethod);
-TUser *userSequentialSearch(const char *filename, const char *targetCPF);
+TUser *userSequentialSearch(const char * filename, const char * targetCPF);
+void updateUser(const char *filename, const char *targetCPF, TUser *updatedUser);
 void deleteUser(const char *filename, const char *cpfToDelete);
 
 
@@ -70,18 +85,28 @@ void posSearchProcess(TProd* p);
 void preRemoveProcess(TProd* p, FILE *stock);
 TProd* searchAndPrintProd(TProd* p, FILE* stock);
 
+/* TProdNode Functions */
+TProdNode* criaNo(TProd *product);
+void insertProduct(TProdNode **head, TProd *product);
+void freeProductList(TProdNode *head);
+
 /* Order Functions */
 TOrder* order(TUser* user, int numOfTypes, char *date);
 void orderPrint(TOrder *order);
+int qtdOrderInFile(FILE *file);
+int orderSize();
 int generateRandomProductCode();
 void generateRandomDueDate(char* due_date);
 TProd* createRandomProduct();
 void freeOrder(TOrder* order);
+void saveOrder(TOrder* order, const char *filename);
+void saveOrderInUserFile(TOrder* order, TUser* user);
 TOrder* createOrderWithRandomProducts(int numOfTypes, const char* date);
 void printOrders(FILE *out);
+TOrder *readOrderWithProd(FILE *in);
 TOrder *readOrder(FILE *in);
-// void printAllOrders(TUser *user);
+void printAllOrders(TUser *user);
 void createMultipleOrdersWithRandomProducts(TUser* user, int orderCount);
 void deleteOrder(TUser *user, int orderCode);
 
-#endif /* STRUCTS_H */
+#endif

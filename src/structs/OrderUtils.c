@@ -27,8 +27,6 @@ TProd* createRandomProduct() {
     return product;
 }
 void freeOrder(TOrder* order) {
-    for (int i = 0; i < order->numOfTypes; i++) {
-        free(order->products[i]);
-    }
+    free(order->products);
     free(order);
 }

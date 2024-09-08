@@ -1,8 +1,11 @@
 #include "classificacaoInterna.h"
-#include "../structs.h"
+#include "../structs.h"         
+#include "../file/FileUtils.h"  
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <direct.h>
 #include <time.h>
 
 
@@ -36,9 +39,10 @@ int classificacao_interna(FILE *arq, int M) {
             }
             v[k + 1] = f;
         }
-
-        sprintf(nomeParticao, "output/partition%i.dat", qtdParticoes);
-
+        if(checkIfFolderExist("src/partitions")==false){
+            _mkdir("src/partitions");
+        }
+        sprintf(nomeParticao, "src/partitions/partition%i.dat", qtdParticoes);
         FILE *p = fopen(nomeParticao, "wb+");
         if (p == NULL) {
             printf("Erro ao criar o arquivo de saída\n");
