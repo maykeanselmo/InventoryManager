@@ -1,10 +1,11 @@
 #include "../structs.h"
+// #include "../UserUtils.h"
 #include <stdlib.h>
 #include <string.h>
 
 void generateRandomCPF(char* cpf) {
     for (int i = 0; i < 11; i++) {
-        cpf[i] = '0' + rand() % 10; // Gera um dígito aleatório de 0 a 9
+        cpf[i] = '0' + rand() % 10; 
     }
     cpf[11] = '\0';
 }
@@ -25,7 +26,7 @@ void posSearchProcessUser(TUser* u){
         printf("\n[0] - not.\n[1] - yes.\n: ");
         scanf("%d",&op);
         if(op!=0){
-            printUser(u);
+            printUser(*u);
             return;
         }else op =0;
     }else {
@@ -34,3 +35,4 @@ void posSearchProcessUser(TUser* u){
     }
 
 }
+
